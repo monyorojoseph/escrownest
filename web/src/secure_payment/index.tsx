@@ -245,7 +245,7 @@ const SecurePayment = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Your Email
+            Buyer's Email
           </label>
           <input
             type="email"
@@ -253,8 +253,11 @@ const SecurePayment = () => {
             value={formData.sellerEmail}
             onChange={handleInputChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-            placeholder="your@email.com"
+            placeholder="buyer@email.com"
           />
+          <p className="mt-1 text-sm text-gray-500">
+            The buyer will receive escrow agreement details at this email
+          </p>
         </div>
 
         <div className="pt-4 flex justify-between">
