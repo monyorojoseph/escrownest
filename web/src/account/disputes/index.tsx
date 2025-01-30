@@ -1,89 +1,120 @@
 import React from 'react';
-import { format } from 'date-fns';
 
 interface Dispute {
   id: string;
-  agreementId: string;
+  subject: string;
   transactionId: string;
-  status: 'open' | 'under_review' | 'resolved' | 'closed';
-  reason: 'payment' | 'service' | 'refund' | 'other';
-  createdAt: Date;
-  updatedAt: Date;
   amount: number;
+  status: 'Open' | 'Under Review' | 'Resolved' | 'Closed';
+  priority: 'High' | 'Medium' | 'Low';
+  createdAt: string;
+  lastUpdated: string;
 }
 
-const sampleDisputes: Dispute[] = [
-  {
-    id: 'disp_1',
-    agreementId: 'AGR-001',
-    transactionId: 'tr_1',
-    status: 'open',
-    reason: 'payment',
-    createdAt: new Date('2024-03-15T10:30:00'),
-    updatedAt: new Date('2024-03-15T10:30:00'),
-    amount: 1500.00
-  },
-  {
-    id: 'disp_2',
-    agreementId: 'AGR-002',
-    transactionId: 'tr_3',
-    status: 'under_review',
-    reason: 'refund',
-    createdAt: new Date('2024-03-13T09:20:00'),
-    updatedAt: new Date('2024-03-14T15:45:00'),
-    amount: 750.00
-  }
-];
-
-const getStatusColor = (status: Dispute['status']) => {
-  switch (status) {
-    case 'open':
-      return 'text-red-600 bg-red-50';
-    case 'under_review':
-      return 'text-yellow-600 bg-yellow-50';
-    case 'resolved':
-      return 'text-green-600 bg-green-50';
-    case 'closed':
-      return 'text-gray-600 bg-gray-50';
-  }
-};
-
-const getReasonColor = (reason: Dispute['reason']) => {
-  switch (reason) {
-    case 'payment':
-      return 'text-blue-600';
-    case 'service':
-      return 'text-purple-600';
-    case 'refund':
-      return 'text-orange-600';
-    case 'other':
-      return 'text-gray-600';
-  }
-};
-
 const Disputes: React.FC = () => {
+  // Mock data - replace with actual API call later
+  const disputes: Dispute[] = [
+    {
+      id: '1',
+      subject: 'Incorrect Charge',
+      transactionId: 'TRX-001',
+      amount: 99.99,
+      status: 'Open',
+      priority: 'High',
+      createdAt: '2024-03-15T10:30:00',
+      lastUpdated: '2024-03-15T10:30:00',
+    },
+    {
+      id: '2',
+      subject: 'Double Payment',
+      transactionId: 'TRX-002',
+      amount: 149.99,
+      status: 'Under Review',
+      priority: 'Medium',
+      createdAt: '2024-03-14T15:45:00',
+      lastUpdated: '2024-03-15T09:20:00',
+    },
+    // Add more mock data as needed
+  ];
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
+
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
+  };
+
   return (
-    <div className="w-full">
-      <h1 className="text-2xl font-semibold mb-6">Disputes</h1>
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-8">
+      <h1 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Disputes</h1>
+      
+      {/* Mobile view - card layout */}
+      <div className="block sm:hidden">
+        <div className="space-y-4">
+          {disputes.map((dispute) => (
+            <div key={dispute.id} className="bg-white rounded-lg shadow p-4">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-medium text-gray-900">{dispute.subject}</h3>
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                  ${dispute.status === 'Open' ? 'bg-yellow-100 text-yellow-800' : 
+                  dispute.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 
+                  dispute.status === 'Resolved' ? 'bg-green-100 text-green-800' :
+                  'bg-gray-100 text-gray-800'}`}>
+                  {dispute.status}
+                </span>
+              </div>
+              <div className="space-y-2 text-sm text-gray-500">
+                <div className="flex justify-between">
+                  <span>Transaction ID:</span>
+                  <span>{dispute.transactionId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Amount:</span>
+                  <span className="font-medium">{formatCurrency(dispute.amount)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Priority:</span>
+                  <span className={`font-medium ${
+                    dispute.priority === 'High' ? 'text-red-600' :
+                    dispute.priority === 'Medium' ? 'text-yellow-600' :
+                    'text-green-600'
+                  }`}>{dispute.priority}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Created:</span>
+                  <span>{formatDateTime(dispute.createdAt)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Last Updated:</span>
+                  <span>{formatDateTime(dispute.lastUpdated)}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop view - table layout */}
+      <div className="hidden sm:block">
+        <div className="bg-white rounded-lg shadow overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Agreement ID
+                  Subject
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Transaction ID
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Reason
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Amount
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                  Priority
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Created
@@ -91,35 +122,46 @@ const Disputes: React.FC = () => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Last Updated
                 </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {sampleDisputes.map((dispute) => (
-                <tr key={dispute.id}>
+              {disputes.map((dispute) => (
+                <tr key={dispute.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {dispute.agreementId}
+                    {dispute.subject}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {dispute.transactionId}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatCurrency(dispute.amount)}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className={`font-medium ${getReasonColor(dispute.reason)}`}>
-                      {dispute.reason.charAt(0).toUpperCase() + dispute.reason.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${dispute.amount.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(dispute.status)}`}>
-                      {dispute.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    <span className={`font-medium ${
+                      dispute.priority === 'High' ? 'text-red-600' :
+                      dispute.priority === 'Medium' ? 'text-yellow-600' :
+                      'text-green-600'
+                    }`}>
+                      {dispute.priority}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(dispute.createdAt, 'MMM d, yyyy HH:mm')}
+                    {formatDateTime(dispute.createdAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(dispute.updatedAt, 'MMM d, yyyy HH:mm')}
+                    {formatDateTime(dispute.lastUpdated)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                      ${dispute.status === 'Open' ? 'bg-yellow-100 text-yellow-800' : 
+                      dispute.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 
+                      dispute.status === 'Resolved' ? 'bg-green-100 text-green-800' :
+                      'bg-gray-100 text-gray-800'}`}>
+                      {dispute.status}
+                    </span>
                   </td>
                 </tr>
               ))}

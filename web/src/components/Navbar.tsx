@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router';
 import './Navbar.css';
 import { useAuth } from '../context/AuthContext';
@@ -14,9 +15,8 @@ const Navbar = () => {
         <div className="navbar-links">
           {isAuthenticated ? (
             <>
-              <Link to="/account">Dashboard</Link>
-              <Link to="/account/transactions">Transactions</Link>
               <Link to="/secure_payment">New Payment</Link>
+              <Link to="/account/transactions">Transactions</Link>
               <Link to="/account/settings">Settings</Link>
             </>
           ) : (

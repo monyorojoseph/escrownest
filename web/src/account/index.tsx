@@ -45,10 +45,10 @@ const AccountLayout: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Mobile Sidebar Toggle */}
+      {/* Mobile Sidebar Toggle - adjusted top positioning */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-sky-500 text-white rounded-lg"
+        className="lg:hidden fixed top-20 left-4 z-50 p-2 bg-sky-500 text-white rounded-lg"
       >
         {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
