@@ -3,27 +3,26 @@
   top: 0;
   z-index: 1000;
   width: 100%;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .navbar-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
 }
 
 .navbar-brand {
   font-size: 1.25rem;
   font-weight: 600;
-  text-decoration: none;
   color: #0284c7;
+  text-decoration: none;
 }
 
 .navbar-links {
@@ -61,17 +60,69 @@
   width: 100%;
 }
 
+.menu-trigger {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hamburger {
+  width: 24px;
+  height: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #475569;
+  transition: all 0.3s ease;
+  transform-origin: left center;
+}
+
+.hamburger.active span:first-child {
+  transform: rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:last-child {
+  transform: rotate(-45deg);
+}
+
 @media (max-width: 768px) {
-  .navbar-content {
-    padding: 0 1rem;
+  .menu-trigger {
+    display: block;
   }
-  
+
   .navbar-links {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    flex-direction: column;
     gap: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
   }
-  
-  .navbar-links a {
-    font-size: 0.9rem;
+
+  .navbar-links.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
   }
 }
 
@@ -117,4 +168,11 @@
   background-color: #eef2ff;
   border-left-color: #6366f1;
   color: #4f46e5;
+}
+
+.navbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 } 

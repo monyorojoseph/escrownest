@@ -1,10 +1,11 @@
-import React from 'react';
 import { Link } from 'react-router';
 import './Navbar.css';
 import { useAuth } from '../context/AuthContext';
+import { useState } from 'react';
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="navbar">
@@ -12,10 +13,23 @@ const Navbar = () => {
         <Link to="/" className="navbar-brand">
           SecurePay
         </Link>
-        <div className="navbar-links">
+        
+        <button 
+          className="menu-trigger"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+        >
+          <div className={`hamburger ${isOpen ? 'active' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+
+        <div className={`navbar-links ${isOpen ? 'show' : ''}`}>
           {isAuthenticated ? (
             <>
-              <Link to="/secure_payment">New Payment</Link>
+              <Link to="/secure_payment">New Agreement</Link>
               <Link to="/account/transactions">Transactions</Link>
               <Link to="/account/settings">Settings</Link>
             </>
