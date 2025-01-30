@@ -13,24 +13,28 @@ import Notifications from './account/notifications/index.tsx';
 import Transactions from './account/transactions/index.tsx';
 import Agreements from './account/agreements/index.tsx';
 import Disputes from './account/disputes/index.tsx';
+import Layout from './components/Layout.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="auth" element={<Auth />}>
-          <Route path='login' element={<Login />} />
-          <Route path="register" element={<Register />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<App />} />
+          <Route path="auth" element={<Auth />}>
+            <Route path='login' element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
+          <Route path="/account" element={<AccountLayout />}> 
+            <Route path="agreements" element={<Agreements />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="disputes" element={<Disputes />} />   
+            <Route path="settings" element={<Settings />} />
+            <Route path="notifications" element={<Notifications />} />
+          </Route>
+          <Route path="/secure_payment" element={<SecurePayment />} />
         </Route>
-        <Route path="/account" element={<AccountLayout />}> 
-          <Route path="agreements" element={<Agreements />} />
-          <Route path="transactions" element={<Transactions />} />
-          <Route path="disputes" element={<Disputes />} />   
-          <Route path="settings" element={<Settings />} />
-          <Route path="notifications" element={<Notifications />} />
-        </Route>
-        <Route path="/secure_payment" element={<SecurePayment />} />
+
       </Routes>
     </BrowserRouter>
   </StrictMode>,
