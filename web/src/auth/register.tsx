@@ -1,6 +1,22 @@
 import { Link } from 'react-router';
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext'; 
 
 export default function Register() {
+  const { register } = useAuth();
+
+  const [ name, setName ] = useState('');
+  const [ email, setEmail ] = useState('');
+  const [ password, setPassword ] = useState('');
+  const [ loading, setLoading ] = useState(false);
+
+  const handleRegister = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    await register({ name, email, password });
+    setLoading(false);
+  };
+
   const handleGoogleRegister = () => {
     // Add Google register logic here
     console.log('Google register clicked');
@@ -18,14 +34,14 @@ export default function Register() {
         </p>
       </div>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleRegister}>
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Full Name
           </label>
           <input
-            type="text"
-            id="name"
+            type="text" required
+            id="name" value={name} onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
               focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter your full name"
@@ -37,8 +53,8 @@ export default function Register() {
             Email
           </label>
           <input
-            type="email"
-            id="email"
+            type="email" required
+            id="email" value={email} onChange={(e) => setEmail(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
               focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter your email"
@@ -50,8 +66,8 @@ export default function Register() {
             Password
           </label>
           <input
-            type="password"
-            id="password"
+            type="password" required
+            id="password" value={password} onChange={(e) => setPassword(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
               focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
             placeholder="Choose a password"
@@ -59,11 +75,10 @@ export default function Register() {
         </div>
 
         <button
-          type="submit"
+          type="submit" disabled={loading}  
           className="w-full rounded-lg bg-sky-500 px-4 py-2 text-white hover:bg-sky-600 
-            transition-colors duration-300 shadow-md hover:shadow-lg"
-        >
-          Create account
+            transition-colors duration-300 shadow-md hover:shadow-lg" >
+          {loading ? 'Creating account...' : 'Create account'}
         </button>
       </form>
 

@@ -1,16 +1,60 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
+import axiosInstance from '../services/axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+import { AxiosResponse } from 'axios';
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  logout: () => void;
+  login: ({ email, password }: { email: string, password: string }) => void;
+  register: ({ name, email, password }: { name: string, email: string, password: string }) => void;
 }
 
-const AuthContext = createContext<AuthContextType>({ isAuthenticated: true });
+const AuthContext = createContext<AuthContextType>({ 
+  isAuthenticated: true, logout: () => {}, 
+  login: () => {}, register: () => {} });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated] = useState(false);
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated  ] = useState(false);
+
+  const logout = async() => {
+    const response = await axiosInstance.post('/logout') as AxiosResponse;  
+    if (response.status === 200) {
+      toast.success('Logout successful');
+      localStorage.removeItem('token');
+      setIsAuthenticated(false);
+      navigate('/');
+    } else {
+      toast.error('Logout failed');
+    }
+  };
+
+  const login = async ({ email, password }: { email: string, password: string }) => {
+    const response = await axiosInstance.post('/login', { email, password }) as AxiosResponse;  
+    if (response.status === 200) {
+      setIsAuthenticated(true);
+      toast.success('Login successful, you will be redirected to the dashboard');
+      localStorage.setItem('token', response.data.token);
+      navigate('/account/agreements');
+    } else {
+      toast.error('Login failed');
+    }
+  };  
+
+  const register = async ({ name, email, password }: { name: string, email: string, password: string }) => {
+    const response = await axiosInstance.post('/register', { name, email, password }) as AxiosResponse;
+    if (response.status === 200) {
+      toast.success('Registration successful, email verification sent');
+      navigate('/auth/email-verification');
+    } else {
+      toast.error('Registration failed');
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, logout, login, register }}>
       {children}
     </AuthContext.Provider>
   );

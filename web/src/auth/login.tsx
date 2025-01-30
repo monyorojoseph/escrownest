@@ -1,8 +1,22 @@
 import { Link } from 'react-router';
+import { useAuth } from '../context/AuthContext';
+import { useState } from 'react';
 
 export default function Login() {
+  const { login } = useAuth();
+
+  const [ email, setEmail ] = useState('');
+  const [ password, setPassword ] = useState('');
+  const [ loading, setLoading ] = useState(false);
+
+  const handleLogin = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    await login({ email, password });
+    setLoading(false);
+  };
+
   const handleGoogleLogin = () => {
-    // Add Google login logic here
     console.log('Google login clicked');
   };
 
@@ -18,14 +32,14 @@ export default function Login() {
         </p>
       </div>
       
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleLogin}>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
           </label>
           <input
-            type="email"
-            id="email"
+            type="email" required 
+            id="email" value={email} onChange={(e) => setEmail(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 
               focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter your email"
@@ -37,8 +51,8 @@ export default function Login() {
             Password
           </label>
           <input
-            type="password"
-            id="password"
+            type="password" required
+            id="password" value={password} onChange={(e) => setPassword(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2
               focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
             placeholder="Enter your password"
@@ -46,11 +60,10 @@ export default function Login() {
         </div>
 
         <button
-          type="submit"
+          type="submit" disabled={loading}
           className="w-full rounded-lg bg-sky-500 px-4 py-2 text-white hover:bg-sky-600 
-            transition-colors duration-300 shadow-md hover:shadow-lg"
-        >
-          Sign in
+            transition-colors duration-300 shadow-md hover:shadow-lg" >
+          {loading ? 'Loading...' : 'Sign in'}
         </button>
       </form>
 

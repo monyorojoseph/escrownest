@@ -8,8 +8,10 @@ import {
   AlertCircle, 
   User,
   Menu,
-  X 
+  X,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -38,10 +40,15 @@ const accountRoutes = [
 ];
 
 const AccountLayout: React.FC = () => {
+  const { logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const userName = "John Doe";
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -88,6 +95,14 @@ const AccountLayout: React.FC = () => {
               onClick={() => setIsSidebarOpen(false)}
             />
           ))}
+          
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-sky-50 rounded-lg transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Logout</span>
+          </button>
         </nav>
       </aside>
 

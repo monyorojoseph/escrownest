@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowRight, User, Store } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 type UserType = 'seller' | 'buyer' | '';
 type Agreement = {
@@ -14,6 +15,8 @@ type Agreement = {
 };
 
 const SecurePayment = () => {
+  const { isAuthenticated } = useAuth();
+  
   const [userType, setUserType] = useState<UserType>('');
   const [step, setStep] = useState(1);
   const [agreementId, setAgreementId] = useState('');
