@@ -1,6 +1,17 @@
-import { Outlet } from 'react-router';
+import { useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router';
+import { useAuth } from '../context/AuthContext';
 
 export default function Auth() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if(isAuthenticated) {
+      navigate('/account/agreements');
+    }
+  }, [isAuthenticated]);
+
   return (
     <div className="flex min-h-screen">
       <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-sky-500">

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router';
 import { 
   Settings, 
   Bell, 
@@ -40,11 +40,18 @@ const accountRoutes = [
 ];
 
 const AccountLayout: React.FC = () => {
-  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { logout, isAuthenticated } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const userName = "John Doe";
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  useEffect(() => {
+    if(!isAuthenticated) {  
+      navigate('/auth/login');
+    }
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     logout();

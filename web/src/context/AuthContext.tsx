@@ -11,19 +11,17 @@ interface AuthContextType {
   register: ({ name, email, password }: { name: string, email: string, password: string }) => void;
 }
 
-const AuthContext = createContext<AuthContextType>({ 
-  isAuthenticated: true, logout: () => {}, 
-  login: () => {}, register: () => {} });
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated  ] = useState(false);
 
   const logout = async() => {
-    const response = await axiosInstance.post('/logout') as AxiosResponse;  
+    const response = await axiosInstance.post('api/auth/logout/') as AxiosResponse;  
     if (response.status === 200) {
       toast.success('Logout successful');
-      localStorage.removeItem('token');
+      localStorage.removeItem('tokens');
       setIsAuthenticated(false);
       navigate('/');
     } else {
@@ -32,11 +30,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async ({ email, password }: { email: string, password: string }) => {
-    const response = await axiosInstance.post('/login', { email, password }) as AxiosResponse;  
+    const response = await axiosInstance.post('api/auth/login/', { email, password }) as AxiosResponse;  
     if (response.status === 200) {
       setIsAuthenticated(true);
       toast.success('Login successful, you will be redirected to the dashboard');
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('tokens', JSON.stringify(response.data.tokens));
       navigate('/account/agreements');
     } else {
       toast.error('Login failed');
@@ -44,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };  
 
   const register = async ({ name, email, password }: { name: string, email: string, password: string }) => {
-    const response = await axiosInstance.post('/register', { name, email, password }) as AxiosResponse;
+    const response = await axiosInstance.post('api/auth/register/', { name, email, password }) as AxiosResponse;
     if (response.status === 200) {
       toast.success('Registration successful, email verification sent');
       navigate('/auth/email-verification');
@@ -52,6 +50,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.error('Registration failed');
     }
   };
+
+  console.log({isAuthenticated});
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, logout, login, register }}>
