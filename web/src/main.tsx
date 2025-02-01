@@ -17,6 +17,10 @@ import Agreements from './account/agreements/index.tsx';
 import Disputes from './account/disputes/index.tsx';
 import Layout from './components/Layout.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
+import axiosInstance from './services/axios.ts';
+
+
+axiosInstance
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -59,7 +59,7 @@ class AuthViewSetAPI(ViewSet):
         except Exception as e:  
             return Response({"message": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=False, methods=["POST"], url_path="login")
+    @action(detail=False, methods=["POST"], url_path="email-verification")
     def email_verification(self, request):
         email = request.data.get("email")
         if email:
@@ -76,22 +76,25 @@ class AuthViewSetAPI(ViewSet):
     #     return Response({"message": "Hello, World!"})
 
 class UserViewSetAPI(ViewSet):
-    permission_classes = [ IsAuthenticated ]
+    # permission_classes = [ IsAuthenticated ]
     authentication_classes = [ JWTAuthentication ]
 
+    @action(detail=False, methods=["GET"])
     def get(self, request):
         user = request.user
         serialized_user = BaseUserSerializer(user)
         return Response(serialized_user.data, status=status.HTTP_200_OK)
     
-    def update(self, request):
-        return Response({"message": "Hello, World!"})
+    # # @action(detail=False, methods=["PUT"], url_path="/update")
+    # def update(self, request):
+    #     return Response({"message": "Hello, World!"})
     
-    def delete(self, request):
-        try:
-            request.user.delete()
-            return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"message": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({"message": "Unable to delete user account"}, status=status.HTTP_400_BAD_REQUEST)
+    # # @action(detail=False, methods=["DELETE"], url_path="/")
+    # def delete(self, request):
+    #     try:
+    #         request.user.delete()
+    #         return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
+    #     except User.DoesNotExist:
+    #         return Response({"message": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
+    #     except Exception as e:
+    #         return Response({"message": "Unable to delete user account"}, status=status.HTTP_400_BAD_REQUEST)

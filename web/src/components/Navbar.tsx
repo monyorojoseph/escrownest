@@ -5,7 +5,6 @@ import { useState } from 'react';
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  console.log({isAuthenticated});
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">

@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from 'react';
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import axiosInstance from '../services/axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
@@ -17,8 +17,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated  ] = useState(false);
 
+  useEffect(() => {
+    const tokens = localStorage.getItem('tokens');
+    if (tokens) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const logout = async() => {
-    const response = await axiosInstance.post('api/auth/logout/') as AxiosResponse;  
+    const response = await axiosInstance.post('/api/auth/logout/') as AxiosResponse;  
     if (response.status === 200) {
       toast.success('Logout successful');
       localStorage.removeItem('tokens');
@@ -30,7 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async ({ email, password }: { email: string, password: string }) => {
-    const response = await axiosInstance.post('api/auth/login/', { email, password }) as AxiosResponse;  
+    const response = await axiosInstance.post('/api/auth/login/', { email, password }) as AxiosResponse;  
     if (response.status === 200) {
       setIsAuthenticated(true);
       toast.success('Login successful, you will be redirected to the dashboard');
@@ -42,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };  
 
   const register = async ({ name, email, password }: { name: string, email: string, password: string }) => {
-    const response = await axiosInstance.post('api/auth/register/', { name, email, password }) as AxiosResponse;
+    const response = await axiosInstance.post('/api/auth/register/', { name, email, password }) as AxiosResponse;
     if (response.status === 200) {
       toast.success('Registration successful, email verification sent');
       navigate('/auth/email-verification');
@@ -51,7 +58,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  console.log({isAuthenticated});
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, logout, login, register }}>

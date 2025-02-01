@@ -6,12 +6,13 @@ import {
   DollarSign, 
   FileText, 
   AlertCircle, 
-  User,
+  User as UserIcon,
   Menu,
   X,
   LogOut
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { getUser } from '../hooks/getUser';
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -42,8 +43,8 @@ const accountRoutes = [
 const AccountLayout: React.FC = () => {
   const navigate = useNavigate();
   const { logout, isAuthenticated } = useAuth();
+  const { user } = getUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const userName = "John Doe";
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -56,6 +57,7 @@ const AccountLayout: React.FC = () => {
   const handleLogout = () => {
     logout();
   };
+
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -83,13 +85,9 @@ const AccountLayout: React.FC = () => {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
       `}>
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-sky-50 rounded-lg">
-              <User className="w-6 h-6 text-sky-500" />
-            </div>
-            <h2 className="font-semibold text-lg text-gray-900">{userName}</h2>
-          </div>
+        <div className="p-3 border-b border-gray-100">
+            <h2 className="font-semibold text-sm text-gray-900">{  user?.name  }</h2>
+            <p className="text-xs text-gray-900">{  user?.email  }</p>
         </div>
 
         <nav className="p-4 space-y-1">
