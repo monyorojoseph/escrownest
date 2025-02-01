@@ -1,11 +1,20 @@
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, X } from "lucide-react"
+import { AgreementUserType } from "../../..";
 
-const AgreementPayment = ({setStep}: {setStep: (step: number) => void}) => {
+const AgreementPayment = ({setStep, setUserType}: {setStep: (step: number) => void, setUserType: (userType: AgreementUserType) => void}) => {
     const agreement  = {} as any
 
     return (
         <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-semibold mb-6">Complete Payment</h2>
+
+
+          <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-6">Complete Payment</h2>
+              <button onClick={() => setUserType("")} className="text-gray-500 hover:text-gray-700 cursor-pointer">
+                  <X className="w-4 h-4" />
+              </button>
+          </div>
         
         <div className="space-y-6">
           <div className="bg-gray-50 p-4 rounded-lg">

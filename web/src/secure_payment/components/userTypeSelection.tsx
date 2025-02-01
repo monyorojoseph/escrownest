@@ -1,6 +1,7 @@
 import { User, Store } from "lucide-react"
+import { AgreementUserType } from "..";
 
-const UserTypeSelection = ({ setUserType }: { setUserType: Function}) => {
+const UserTypeSelection = ({ setUserType }: { setUserType: (userType: AgreementUserType) => void}) => {
     return (
         <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold mb-6">Select Your Role</h2>

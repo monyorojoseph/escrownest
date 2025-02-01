@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async ({ name, email, password }: { name: string, email: string, password: string }) => {
     const response = await axiosInstance.post('/api/auth/register/', { name, email, password }) as AxiosResponse;
-    if (response.status === 200) {
+    if (response.status === 201) {
       toast.success('Registration successful, email verification sent');
       navigate('/auth/email-verification');
     } else {

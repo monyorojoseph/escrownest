@@ -1,45 +1,19 @@
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, X } from "lucide-react"
+import AgreementDetails from "../agreementDetails"
+import { AgreementUserType } from "../../..";
 
-const AgreementReview = ({setStep}: {setStep: (step: number) => void}) => {
+const AgreementReview = ({setStep, setUserType}: {setStep: (step: number) => void, setUserType: (userType: AgreementUserType) => void}) => {
     const agreement  = {} as any
     return (
-            
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-semibold mb-6">Review Agreement</h2>
-      
+      <div className="bg-white rounded-lg shadow-lg p-6">
 
-
-      <div className="space-y-6">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="grid gap-4">
-            <div>
-              <div className="text-sm text-gray-500">Product Name</div>
-              <div className="font-medium">{agreement?.productName}</div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Amount</div>
-              <div className="font-medium">${agreement?.amount}</div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Description</div>
-              <div className="font-medium">{agreement?.description}</div>
-            </div>
-            {agreement?.costBreakdown && (
-              <div>
-                <div className="text-sm text-gray-500">Cost Breakdown</div>
-                <div className="font-medium">{agreement.costBreakdown}</div>
-              </div>
-            )}
-            <div>
-              <div className="text-sm text-gray-500">Delivery Period</div>
-              <div className="font-medium">{agreement?.deliveryPeriod}</div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Seller Email</div>
-              <div className="font-medium">{agreement?.sellerEmail}</div>
-            </div>
+          <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-6">Review Agreement</h2>
+              <button onClick={() => setUserType("")} className="text-gray-500 hover:text-gray-700 cursor-pointer">
+                  <X className="w-4 h-4" />
+              </button>
           </div>
-        </div>
+          <AgreementDetails agreement={agreement} />
 
           <div className="mt-8 flex justify-between">
             <button
@@ -56,7 +30,6 @@ const AgreementReview = ({setStep}: {setStep: (step: number) => void}) => {
             </button>
           </div>
       </div>
-    </div>
     )
 }
 

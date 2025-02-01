@@ -7,8 +7,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import action
 
-from core.serializers import BaseUserSerializer
-from core.models import User
+from core.serializers import BaseUserSerializer, PaymentAgreementSerializer
+from core.models import User, PaymentAgreement
 from core.utils import get_tokens_for_user
 
 
@@ -76,7 +76,7 @@ class AuthViewSetAPI(ViewSet):
     #     return Response({"message": "Hello, World!"})
 
 class UserViewSetAPI(ViewSet):
-    # permission_classes = [ IsAuthenticated ]
+    permission_classes = [ IsAuthenticated ]
     authentication_classes = [ JWTAuthentication ]
 
     @action(detail=False, methods=["GET"])
@@ -85,16 +85,61 @@ class UserViewSetAPI(ViewSet):
         serialized_user = BaseUserSerializer(user)
         return Response(serialized_user.data, status=status.HTTP_200_OK)
     
-    # # @action(detail=False, methods=["PUT"], url_path="/update")
-    # def update(self, request):
-    #     return Response({"message": "Hello, World!"})
     
-    # # @action(detail=False, methods=["DELETE"], url_path="/")
-    # def delete(self, request):
-    #     try:
-    #         request.user.delete()
-    #         return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
-    #     except User.DoesNotExist:
-    #         return Response({"message": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
-    #     except Exception as e:
-    #         return Response({"message": "Unable to delete user account"}, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request):
+        try:
+            request.user.delete()
+            return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"message": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"message": "Unable to delete user account"}, status=status.HTTP_400_BAD_REQUEST)
+
+class PaymentAgreementViewSetAPI(ViewSet):
+    permission_classes = [ IsAuthenticated ]
+    authentication_classes = [ JWTAuthentication ]
+
+    @action(detail=False, methods=["POST"], url_path="create")
+    def create_agreement(self, request):
+        data = request.data
+        if data['buyer_email'] and data['name'] and data['amount'] and data['transaction_type'] and data['description']:
+            agreement = PaymentAgreement.objects.create(**data, seller=request.user)
+
+            buyer = User.objects.filter(email=data['buyer_email'])
+            if buyer.exists():
+                agreement.buyer = buyer.first()
+            
+            agreement.save()
+            agreement.refresh_from_db()
+            serializer_data = PaymentAgreementSerializer(agreement)
+            return Response(serializer_data.data, status=status.HTTP_201_CREATED)
+        return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    @action(detail=True, methods=["GET"])
+    def get(self, request, pk):
+        agreement = PaymentAgreement.objects.get(pk=pk)
+        serializer = PaymentAgreementSerializer(agreement)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=["GET"], url_path="list")
+    def list_agreements(self, request):
+        agreements = PaymentAgreement.objects.filter(seller=request.user)
+        serializer = PaymentAgreementSerializer(agreements, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["PUT"], url_path="update")
+    def change_agreemenr(self, request, pk):
+        agreement = PaymentAgreement.objects.get(pk=pk)
+        data = request.data
+        for key, value in data.items():
+            setattr(agreement, key, value)
+        agreement.save()
+        agreement.refresh_from_db()
+        serializer = PaymentAgreementSerializer(agreement)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    @action(detail=True, methods=["PUT"], url_path="delete")
+    def delete(self, request, pk):
+        agreement = PaymentAgreement.objects.get(pk=pk)
+        agreement.delete()
+        return Response({"message": "Agreement deleted successfully."}, status=status.HTTP_200_OK)

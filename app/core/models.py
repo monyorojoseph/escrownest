@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class MyUserManager(BaseUserManager):
@@ -53,29 +54,50 @@ class User(AbstractBaseUser):
     def send_email_verification(self):
         print("Email verification link sent to", self.email)
 
-class EscrowAgreement(models.Model):
+class PaymentAgreement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    currency = models.CharField(max_length=100)
-    description = models.TextField()
-    terms = models.TextField()
+    buyer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='buyer')
+    buyer_email = models.EmailField()
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller')
+    name = models.CharField(max_length=200)
+    amount = models.DecimalField(max_digits=15, decimal_places=2)
+    amount_breakdown = models.JSONField(default=dict, encoder=DjangoJSONEncoder)
+    currency = models.CharField(max_length=100, default="KE")
+    description = models.TextField(null=True, blank=True)
+    document = models.FileField(upload_to='agreement_documents/', null=True, blank=True)
+    days_to_deliver = models.PositiveIntegerField(default=0)
+
+    DOWN_PAYMENT = 'down_payment'
+    FULL_PAYMENT = 'full_payment'
+
+    TRANSACTION_TYPE_CHOICES = [
+        (DOWN_PAYMENT, 'Down Payment'),
+        (FULL_PAYMENT, 'Full Payment'),
+    ]
+    transaction_type = models.CharField(max_length=100, choices=TRANSACTION_TYPE_CHOICES, default=FULL_PAYMENT)
+
+    PENDING = 'pending'
+    ACTIVE = 'active'
+    COMPLETED = 'completed'
+    DISPUTED = 'disputed'
 
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('active', 'Active'),
-        ('completed', 'Completed'),
-        ('disputed', 'Disputed'),
+        (PENDING, 'Pending'),
+        (ACTIVE, 'Active'),
+        (COMPLETED, 'Completed'),
+        (DISPUTED, 'Disputed'),
     ]
 
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
+    extra_data = models.JSONField(default=dict, encoder=DjangoJSONEncoder)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Agreement {self.id} between {self.buyer} and {self.seller}"
+    
+    # after create send email to the buyer
 
 
 # class Transaction(models.Model):

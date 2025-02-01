@@ -19,12 +19,12 @@ axiosInstance.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-axiosInstance.interceptors.response.use(function (response) {
-  console.log({response});
-  return response;
-}, function (error) {
-  console.log({error});
-  return Promise.reject(error);
-});
+// axiosInstance.interceptors.response.use(function (response) {
+//   console.log({response});
+//   return response;
+// }, function (error) {
+//   console.log({error});
+//   return Promise.reject(error);
+// });
 
 export default axiosInstance;
