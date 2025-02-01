@@ -25,7 +25,7 @@ const SellerForm = () => {
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex justify-between items-center">
-            {['Basic Details', 'Payment', 'Delivery'].map((label, index) => (
+            {['Basic Details', 'Payment', 'Deliverable'].map((label, index) => (
               <div key={label} className="flex-1">
                 <div className="flex items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${

@@ -53,16 +53,29 @@ class User(AbstractBaseUser):
     def send_email_verification(self):
         print("Email verification link sent to", self.email)
 
-# class EscrowAgreement(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
-#     seller = models.ForeignKey(User, on_delete=models.CASCADE)
-#     amount = models.DecimalField(max_digits=10, decimal_places=2)
-#     currency = models.CharField(max_length=100)
-#     description = models.TextField()
-#     terms = models.TextField()
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+class EscrowAgreement(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=100)
+    description = models.TextField()
+    terms = models.TextField()
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('disputed', 'Disputed'),
+    ]
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Agreement {self.id} between {self.buyer} and {self.seller}"
 
 
 # class Transaction(models.Model):

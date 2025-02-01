@@ -6,7 +6,6 @@ const DeliverableDetails = ({ formData, setFormData, setFormStep }:
 
     return (
         <div className="space-y-6">
-        <h3 className="text-lg font-medium text-gray-900">Delivery Details</h3>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Delivery Period
@@ -20,7 +19,7 @@ const DeliverableDetails = ({ formData, setFormData, setFormStep }:
             placeholder="e.g., 14 days"
           />
           <p className="mt-1 text-sm text-gray-500">
-            This is the period within which you must deliver the product/service
+            This is the period within which you must deliver the product/service, failure to deliver within this period money will be refunded to the buyer
           </p>
         </div>
   

@@ -5,7 +5,6 @@ const ProductDetails = ({ formData, setFormData, setFormStep }:
     { formData: Agreement, setFormData: (formData: Agreement) => void, setFormStep: (formStep: number) => void }) => {
     return (
     <div className="space-y-6">
-        <h3 className="text-lg font-medium text-gray-900">Basic Details</h3>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Product Name
@@ -32,6 +31,27 @@ const ProductDetails = ({ formData, setFormData, setFormStep }:
             rows={3}
             placeholder="Describe the product or service"
           />
+        </div>
+  
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Supporting Document (Optional)
+          </label>
+          <input
+            type="file"
+            name="document"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              // setFormData({ ...formData, document: file || null });
+            }}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 file:mr-4 file:py-2 file:px-4
+            file:rounded-lg file:border-0 file:text-sm file:font-semibold
+            file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100"
+            accept=".pdf,.doc,.docx,.txt"
+          />
+          <p className="mt-1 text-sm text-gray-500">
+            Upload any relevant document (PDF, DOC, DOCX, or TXT)
+          </p>
         </div>
   
         <div className="pt-4 flex justify-end">
