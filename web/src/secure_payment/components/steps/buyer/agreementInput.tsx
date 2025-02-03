@@ -1,24 +1,56 @@
 import { useState } from "react"
-import { AgreementUserType } from "../../..";
-import { X } from "lucide-react";
+import { useAuth } from "../../../../context/AuthContext"
+import { AxiosResponse } from "axios"
+import axiosInstance from "../../../../services/axios"
+import { AgreementType } from "../../../../types/agreement.type"
+import { toast } from "react-toastify"
 
-const AgreementInput = ({setStep, setUserType}: {setStep: (step: number) => void, setUserType: (userType: AgreementUserType) => void}) => {
+const AgreementInput = ({setStep, setAgreement}: 
+    {setStep: (step: number) => void, setAgreement: (agreement: AgreementType) => void}) => {
+    const { isAuthenticated } = useAuth()
     const [agreementId, setAgreementId] = useState('')
-    const fetchAgreement = (value: string) => {
-        console.log({value})
-        console.log('fetching agreement')
+    const [loading, setLoading] = useState(false)
+
+    const fetchAgreement = async(value: string) => {
+
+        if(!isAuthenticated) {
+            // toast.error('Please login to continue')
+            return
+        }
+        if(!agreementId) {
+            toast.error('Please enter an agreement ID')
+            return
+        }
+
+        const toastId = toast.loading('Fetching agreement...')
+        setLoading(true)
+        const response = await axiosInstance.get(`/api/payment-agreement/${value}/get/`) as AxiosResponse;
+        setLoading(false)
+        console.log({ response })
+        if(response.status === 200) {
+            setAgreement(response.data)
+            toast.update(toastId, {
+                render: 'Agreement fetched successfully',
+                type: 'success',
+                isLoading: false,
+                autoClose: 2000
+            })
+            setStep(2);
+
+        }else{
+            toast.update(toastId, {
+                render: 'Failed to fetch agreement',
+                type: 'error',
+                isLoading: false,
+                autoClose: 2000
+            })
+        }
     }
+
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold mb-6">Enter Agreement Details</h2>
-                <button onClick={() => setUserType("")} className="text-gray-500 hover:text-gray-700 cursor-pointer">
-                    <X className="w-4 h-4" />
-                </button>
-            </div>
         
-            <div className="space-y-6">
-                <div>
+        <div className="space-y-6">
+            <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                     Escrow Agreement ID
                 </label>
@@ -29,18 +61,13 @@ const AgreementInput = ({setStep, setUserType}: {setStep: (step: number) => void
                     className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                     placeholder="ESC-XXXXXX"
                 />
-                </div>
-
-                <button
-                onClick={() => {
-                    fetchAgreement(agreementId);
-                    setStep(2);
-                }}
-                className="w-full bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600"
-                >
-                Look Up Agreement
-                </button>
             </div>
+
+            <button
+                onClick={async() => { await fetchAgreement(agreementId);}} disabled={loading}
+                className="w-full bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600">
+                {loading ? 'Loading...' : 'Look Up Agreement'}
+            </button>
         </div>
     )
 }

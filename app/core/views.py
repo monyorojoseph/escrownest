@@ -102,7 +102,7 @@ class PaymentAgreementViewSetAPI(ViewSet):
     @action(detail=False, methods=["POST"], url_path="create")
     def create_agreement(self, request):
         data = request.data
-        if data['buyer_email'] and data['name'] and data['amount'] and data['transaction_type'] and data['description']:
+        if data['buyer_email'] and data['name'] and data['amount'] and data['transaction_type'] and data['description'] and data['days_to_deliver']:
             agreement = PaymentAgreement.objects.create(**data, seller=request.user)
 
             buyer = User.objects.filter(email=data['buyer_email'])
@@ -129,15 +129,34 @@ class PaymentAgreementViewSetAPI(ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=["PUT"], url_path="update")
-    def change_agreemenr(self, request, pk):
+    def change_agreement(self, request, pk):
         agreement = PaymentAgreement.objects.get(pk=pk)
-        data = request.data
-        for key, value in data.items():
-            setattr(agreement, key, value)
-        agreement.save()
-        agreement.refresh_from_db()
-        serializer = PaymentAgreementSerializer(agreement)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if agreement.status == PaymentAgreement.PENDING:
+            data = request.data
+            for key, value in data.items():
+                setattr(agreement, key, value)
+            agreement.save()
+            agreement.refresh_from_db()
+            serializer = PaymentAgreementSerializer(agreement)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "You can't update active, complete or disputed agreement."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+    @action(detail=True, methods=["PUT"], url_path="dispute")
+    def dispute_agreement(self, request, pk):
+        agreement = PaymentAgreement.objects.get(pk=pk)
+        if agreement.status !=  PaymentAgreement.ACTIVE:
+            agreement.status = PaymentAgreement.DISPUTED
+            agreement.save()
+            agreement.refresh_from_db()
+            serializer = PaymentAgreementSerializer(agreement)
+            # create dispute and start processing refund ( notify seller and buyer )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "You can only dispute active agreement."}, status=status.HTTP_400_BAD_REQUEST)
+        
+    
     @action(detail=True, methods=["PUT"], url_path="delete")
     def delete(self, request, pk):
         agreement = PaymentAgreement.objects.get(pk=pk)

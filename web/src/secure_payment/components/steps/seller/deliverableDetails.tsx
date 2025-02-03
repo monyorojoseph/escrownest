@@ -21,8 +21,7 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
             value={formInputData.days_to_deliver}
             onChange={(e) => setFormInputData({ ...formInputData, days_to_deliver: e.target.value })}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-            placeholder="e.g., 14 days"
-          />
+            placeholder="e.g., 14 days"/>
           <p className="mt-1 text-sm text-gray-500">
             This is the period within which you must deliver the product/service, failure to deliver within this period money will be refunded to the buyer
           </p>

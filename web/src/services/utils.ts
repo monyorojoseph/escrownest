@@ -1,3 +1,5 @@
 import axiosInstance from "./axios";
 
-export const fetcher = (url: string) => axiosInstance.get(url).then(res => res)
+export const fetcher = async (url: string)=> {
+    return axiosInstance.get(url).catch((error)=> console.log(error))
+}

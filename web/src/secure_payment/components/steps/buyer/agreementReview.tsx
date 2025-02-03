@@ -1,35 +1,69 @@
-import { ArrowRight, X } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import AgreementDetails from "../agreementDetails"
-import { AgreementUserType } from "../../..";
+import { AgreementType } from "../../../../types/agreement.type"
+import { toast } from "react-toastify"
+import { AxiosResponse } from "axios"
+import { useState } from "react"
+import axiosInstance from "../../../../services/axios"
+import { useNavigate } from "react-router"
 
-const AgreementReview = ({setStep, setUserType}: {setStep: (step: number) => void, setUserType: (userType: AgreementUserType) => void}) => {
-    const agreement  = {} as any
+const AgreementReview = ({setStep, agreement}: 
+  {setStep: (step: number) => void, agreement: AgreementType}) => {
+    const navigate = useNavigate()
+
+    const [loading, setLoading] = useState(false)
+
+    const updateAgreement = async(status: string) => {
+        const toastId = toast.loading('Updating agreement...')
+        setLoading(true)
+        const response = await axiosInstance.put(`/api/payment-agreement/${agreement?.id}/update/`, {status: status}) as AxiosResponse
+        setLoading(false)
+        if(response.status === 200) {
+            toast.update(toastId, {
+                render: status === "cancelled" ? 'Agreement cancelled successfully' : 'Agreement activated successfully',
+                type: 'success',
+                isLoading: false,
+                autoClose: 2000
+            })
+            if(status === "cancelled") {
+                navigate('/account/agreements')
+            } else {
+                setStep(3)
+            }
+        }else{
+            toast.update(toastId, {
+                render: status === "cancelled" ? 'Failed to cancel agreement' : 'Failed to activate agreement',
+                type: 'error',
+                isLoading: false,
+                autoClose: 2000
+            })
+        }
+    }
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
-
-          <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold mb-6">Review Agreement</h2>
-              <button onClick={() => setUserType("")} className="text-gray-500 hover:text-gray-700 cursor-pointer">
-                  <X className="w-4 h-4" />
-              </button>
-          </div>
+      <>
           <AgreementDetails agreement={agreement} />
 
           <div className="mt-8 flex justify-between">
             <button
               onClick={() => setStep(1)}
-              className="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-100"
-            >
+              className="text-gray-600 px-6 py-2 rounded-lg hover:bg-gray-100" >
               Back
             </button>
-            <button
-              onClick={() => setStep(3)}
-              className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600 flex items-center gap-2"
-            >
-              Proceed to Payment <ArrowRight className="w-4 h-4" />
-            </button>
+
+            <div className="flex justify-left items-center space-x-2">
+              <button disabled={loading}
+                onClick={() => updateAgreement('cancelled')}
+                className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2">
+                Cancel
+              </button>
+              <button
+                onClick={() => setStep(3)}
+                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600 flex items-center gap-2">
+                Proceed to Payment <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-      </div>
+      </>
     )
 }
 

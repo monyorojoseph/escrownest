@@ -1,4 +1,7 @@
+import { formatCurrency } from "../../../utils"
+
 const AgreementDetails = ({ agreement }: { agreement: any }) => {
+
     return (
         <div className="space-y-6">
           <div className="bg-gray-50 p-4 rounded-lg">
@@ -9,7 +12,7 @@ const AgreementDetails = ({ agreement }: { agreement: any }) => {
                 </div>
                 <div>
                   <div className="text-sm text-gray-500">Amount</div>
-                  <div className="font-medium">${agreement?.amount}</div>
+                  <div className="font-medium">{formatCurrency(agreement?.amount)}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500">Description</div>

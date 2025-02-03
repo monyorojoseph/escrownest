@@ -2,6 +2,10 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.serializers.json import DjangoJSONEncoder
+from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, AFTER_UPDATE
+
+
+from core.azure_communications import send_email
 
 
 class MyUserManager(BaseUserManager):
@@ -22,7 +26,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(LifecycleModelMixin, AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -50,11 +54,18 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+    
+    @hook(AFTER_CREATE, on_commit=True)
+    def onCreateAccount(self):
+        # welcome email
+        pass
 
     def send_email_verification(self):
         print("Email verification link sent to", self.email)
 
-class PaymentAgreement(models.Model):
+    
+
+class PaymentAgreement(LifecycleModelMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     buyer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='buyer')
     buyer_email = models.EmailField()
@@ -80,12 +91,14 @@ class PaymentAgreement(models.Model):
     ACTIVE = 'active'
     COMPLETED = 'completed'
     DISPUTED = 'disputed'
+    CANCELED = 'canceled'
 
     STATUS_CHOICES = [
         (PENDING, 'Pending'),
         (ACTIVE, 'Active'),
         (COMPLETED, 'Completed'),
         (DISPUTED, 'Disputed'),
+        (CANCELED, 'Canceled'),
     ]
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
@@ -94,10 +107,34 @@ class PaymentAgreement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f"Agreement {self.id} between {self.buyer} and {self.seller}"
     
-    # after create send email to the buyer
+    @hook(AFTER_CREATE, on_commit=True)
+    def onCreateAgreement(self):
+        # send email to the buyer
+        print("Email sent to", self.buyer_email)
+        send_email()
+
+class Dispute(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    agreement = models.ForeignKey(PaymentAgreement, on_delete=models.CASCADE)
+    raised_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='raised_by')
+    
+    OPEN = 'open'
+    RESOLVED = 'resolved'
+
+    STATUS_CHOICES = [
+        ('open', 'Open'),
+        ('resolved', 'Resolved'),
+    ]
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=OPEN)
+    data = models.JSONField(default=dict, encoder=DjangoJSONEncoder)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 # class Transaction(models.Model):
@@ -106,15 +143,5 @@ class PaymentAgreement(models.Model):
 #     amount = models.DecimalField(max_digits=10, decimal_places=2)
 #     transaction_type = models.CharField(max_length=100)
 #     status = models.CharField(max_length=100)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-# class Dispute(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     agreement = models.ForeignKey(EscrowAgreement, on_delete=models.CASCADE)
-#     raised_by = models.ForeignKey(User, on_delete=models.CASCADE)
-#     reason = models.TextField()
-#     status = models.CharField(max_length=100)
-#     resolution = models.TextField()
 #     created_at = models.DateTimeField(auto_now_add=True)
 #     updated_at = models.DateTimeField(auto_now=True)

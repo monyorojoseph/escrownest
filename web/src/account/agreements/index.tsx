@@ -1,20 +1,65 @@
 import React from 'react';
 import { AgreementType } from '../../types/agreement.type';
 import { getAgreements } from '../../hooks/getAgreements';
+import MobileCardView from './components/mobileCardView';
+import TableRow from './components/tableRow';
+import axiosInstance from '../../services/axios';
+import { toast } from 'react-toastify';
+
+
 
 const Agreements: React.FC = () => {
-  const { agreements, isLoading } = getAgreements();
+  const { agreements, isLoading, mutate } = getAgreements();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
 
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
+  const handleDelete = async (id: string) => {
+    const toastId = toast.loading("Deleting agreement...");
+    const response = await axiosInstance.delete(`/api/payment-agreement/${id}/delete/`);
+    if(response.status === 200){
+      await mutate();
+      toast.update(toastId, {
+        render: "Agreement deleted successfully",
+        type: "success", isLoading: false, autoClose: 3000 });
+    }else{
+      toast.update(toastId, {
+        render: "Failed to delete agreement",
+        type: "error", isLoading: false, autoClose: 3000 });
+    }
+  }
+
+  const handleEdit = async (id: string) => {
+    const toastId = toast.loading("Editing agreement...");
+    const response = await axiosInstance.get(`/api/payment-agreement//${id}/edit`);
+    if(response.status === 200){
+      await mutate();
+      toast.update(toastId, {
+        render: "Agreement edited successfully",
+        type: "success", isLoading: false, autoClose: 3000 });
+    }else{
+      toast.update(toastId, {
+        render: "Failed to edit agreement",
+        type: "error", isLoading: false, autoClose: 3000 });
+    }
+  } 
+
+  const handleView = (id: string) => {
+    console.log(id);
+  }
+
+  const handleDispute = async (id: string) => {
+    const toastId = toast.loading("Disputing agreement...");
+    const response = await axiosInstance.get(`/api/payment-agreement/${id}dispute//`);
+    if(response.status === 200){
+      await mutate();
+      toast.update(toastId, {
+        render: "Agreement disputed successfully",
+        type: "success", isLoading: false, autoClose: 3000 });
+    }else{
+      toast.update(toastId, {
+        render: "Failed to dispute agreement",
+        type: "error", isLoading: false, autoClose: 3000 });
+    }
+  } 
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -24,37 +69,7 @@ const Agreements: React.FC = () => {
       <div className="block sm:hidden">
         <div className="space-y-4">
           {agreements.map((agreement: AgreementType) => (
-            <div key={agreement.id} className="bg-white rounded-lg shadow p-4">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-gray-900">{agreement.name}</h3>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                  ${agreement.status === 'active' ? 'bg-green-100 text-green-800' : 
-                  agreement.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                  agreement.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                  'bg-red-100 text-red-800'}`}>
-                  {agreement.status}
-                </span>
-              </div>
-              <div className="space-y-2 text-sm text-gray-500">
-                <div className="flex justify-between">
-                  <span>Amount:</span>
-                  <span className="font-medium">{formatCurrency(agreement.amount)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Transaction Type:</span>
-                  <span>{agreement.transaction_type}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Deadline:</span>
-                  <span>{agreement.days_to_deliver} days</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Created:</span>
-                  <span>{formatDateTime(agreement.created_at)}</span>
-                </div>
-              </div>
-            </div>
-          ))}
+            <MobileCardView agreement={agreement} handleDelete={handleDelete} handleEdit={handleEdit} />))}
         </div>
       </div>
 
@@ -71,7 +86,10 @@ const Agreements: React.FC = () => {
                   Amount
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Transaction Type
+                  Payment Type
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Payment Method
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Deadline
@@ -86,32 +104,8 @@ const Agreements: React.FC = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {agreements.map((agreement: AgreementType) => (
-                <tr key={agreement.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {agreement.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatCurrency(agreement.amount)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {agreement.transaction_type}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {agreement.days_to_deliver} days
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDateTime(agreement.created_at)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${agreement.status === 'active' ? 'bg-green-100 text-green-800' : 
-                      agreement.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                      agreement.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                      'bg-red-100 text-red-800'}`}>
-                      {agreement.status}
-                    </span>
-                  </td>
-                </tr>
+                <TableRow agreement={agreement} handleDelete={handleDelete} handleEdit={handleEdit} 
+                handleView={handleView} handleDispute={handleDispute} />
               ))}
             </tbody>
           </table>

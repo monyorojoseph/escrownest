@@ -28,22 +28,27 @@ const Navbar = () => {
         <div className={`lg:flex items-center gap-8 ${isOpen ? 'absolute top-16 left-0 right-0 flex flex-col bg-white p-4 border-b border-gray-100 shadow-sm' : 'hidden'}`}>
           {isAuthenticated ? (
             <>
-              <Link to="/secure_payment" className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
+              <Link to="/secure_payment" 
+                className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 
+                after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
                 New Agreement
               </Link>
-              <Link to="/account/transactions" className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
-                Transactions
-              </Link>
-              <Link to="/account/settings" className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
+              <Link to="/account/settings" 
+                className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 
+                after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
                 Settings
               </Link>
             </>
           ) : (
             <>
-              <Link to="/auth/login" className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
+              <Link to="/auth/login" 
+                className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 
+                after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
                 Login
               </Link>
-              <Link to="/auth/register" className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
+              <Link to="/auth/register" 
+                className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 
+                after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
                 Register
               </Link>
             </>

@@ -8,6 +8,7 @@ import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
 import { AgreementUserType } from "../../..";
+import ProgressStep from "../progressStep";
 
 export type AgreementInputData = {
     buyer_email: string;
@@ -34,6 +35,7 @@ const SellerForm = ({setUserType}: {setUserType: (userType: AgreementUserType) =
         formData.append('amount', formInputData.amount);
         formData.append('transaction_type', formInputData.transaction_type);
         formData.append('description', formInputData.description);
+        formData.append('days_to_deliver', formInputData.days_to_deliver);
         // optional fields
         formInputData.amount_breakdown && formData.append('amount_breakdown', formInputData.amount_breakdown);
         formInputData.document && formData.append('document', formInputData.document);
@@ -43,7 +45,7 @@ const SellerForm = ({setUserType}: {setUserType: (userType: AgreementUserType) =
     const handleSubmit = async() => {
         const toastId = toast.loading('Creating agreement...');
         const response = await axiosInstance.post('/api/payment-agreement/create/', formData) as AxiosResponse;
-        console.log("response", response)
+        console.log({ response });
         if(response?.status === 201) {
           setAgreement(response.data);
           toast.update(toastId, {
@@ -51,7 +53,6 @@ const SellerForm = ({setUserType}: {setUserType: (userType: AgreementUserType) =
             type: 'success', isLoading: false, autoClose: 1000 });
           setFormStep(4);
         } else {
-          console.log("failed to create agreement", response)
           toast.update(toastId, {
             render: 'Failed to create agreement',
             type: 'error', isLoading: false, autoClose: 1000 });
@@ -71,26 +72,7 @@ const SellerForm = ({setUserType}: {setUserType: (userType: AgreementUserType) =
           </button>
         </div>
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            {['Basic Details', 'Payment', 'Deliverable', "Review"].map((label, index) => (
-              <div key={label} className="flex-1">
-                <div className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    formStep > index + 1 ? 'bg-green-500' :
-                    formStep === index + 1 ? 'bg-sky-500' : 'bg-gray-300'
-                  } text-white font-semibold`}>
-                    {index + 1}
-                  </div>
-                  <div className={`flex-1 h-1 ${
-                    index < 3 ? (formStep > index + 1 ? 'bg-green-500' : 'bg-gray-300') : 'hidden'
-                  }`} />
-                </div>
-                <div className="text-sm mt-2">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ProgressStep steps={['Basic Details', 'Payment', 'Deliverable', "Review"]} step={formStep} />
 
         {formStep === 1 && 
         <ProductDetails formInputData={formInputData} 
