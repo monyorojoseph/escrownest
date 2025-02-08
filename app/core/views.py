@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
@@ -12,7 +13,7 @@ from core.models import User, PaymentAgreement
 from core.utils import get_tokens_for_user
 
 
-
+logger = logging.getLogger(__name__)
 
 class AuthViewSetAPI(ViewSet):
     permission_classes = []
@@ -33,6 +34,7 @@ class AuthViewSetAPI(ViewSet):
             }
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
+            logger.error(e)
             return Response({"message": "Wrong user credentials."}, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=["POST"], url_path="register")
@@ -56,7 +58,8 @@ class AuthViewSetAPI(ViewSet):
             token = RefreshToken(refresh_token)
             token.blacklist()
             return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
-        except Exception as e:  
+        except Exception as e: 
+            logger.error(e) 
             return Response({"message": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=["POST"], url_path="email-verification")
@@ -91,8 +94,10 @@ class UserViewSetAPI(ViewSet):
             request.user.delete()
             return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
+            logger.error("User not found.")
             return Response({"message": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            logger.error(e)
             return Response({"message": "Unable to delete user account"}, status=status.HTTP_400_BAD_REQUEST)
 
 class PaymentAgreementViewSetAPI(ViewSet):

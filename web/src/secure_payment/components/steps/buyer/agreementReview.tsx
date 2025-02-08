@@ -1,4 +1,3 @@
-import { ArrowRight } from "lucide-react"
 import AgreementDetails from "../agreementDetails"
 import { AgreementType } from "../../../../types/agreement.type"
 import { toast } from "react-toastify"
@@ -53,13 +52,13 @@ const AgreementReview = ({setStep, agreement}:
             <div className="flex justify-left items-center space-x-2">
               <button disabled={loading}
                 onClick={() => updateAgreement('cancelled')}
-                className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2">
+                className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
                 Cancel
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600 flex items-center gap-2">
-                Proceed to Payment <ArrowRight className="w-4 h-4" />
+                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600">
+                Proceed
               </button>
             </div>
           </div>

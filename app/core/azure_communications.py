@@ -1,31 +1,61 @@
 import os
+import logging
 from azure.communication.email import EmailClient
 
-connection_string = "endpoint=https://my-cs.africa.communication.azure.com/;accesskey=D2R2aXyCi2v6lA8777YQAomMvvRuKWrqJwJWUckZT1fq5gUOynXVJQQJ99BBACULyCp3uTeLAAAAAZCSPslj"
+logger = logging.getLogger(__name__)
 
-def send_email():
+connection_string = os.environ.get('COMMUNICATION_SERVICES_CONNECTION_STRING', None)
+
+# {
+#     "content": {
+#         "subject": "Password Reset",
+#         "plainText": "This is the body",
+#         "html": "<html><h1>This is the body</h1></html>"
+#     },
+#     "recipients": {
+#         "to": [
+#             {
+#                 "address": "monyorojoseph@gmail.com",
+#                 "displayName": "Jonah"
+#             },
+
+#             {
+#                 "address": "monyorojoseph@outlook.com",
+#                 "displayName": "Joseph"
+#             },
+
+#             {
+#                 "address": "ygia35433@gmail.com",
+#                 "displayName": "Joseph"
+#             }
+#         ]
+#     },
+#     "senderAddress": "DoNotReply@binaryjinx.com"
+# }
+
+def send_email(content, recipients, senderAddress="DoNotReply@binaryjinx.com"):
+    if connection_string is None:
+        logger.error('No connection string found')
+        return
     try:
         email_client = EmailClient.from_connection_string(connection_string)
         message = {
-            "content": {
-                "subject": "This is the subject",
-                "plainText": "This is the body",
-                "html": "<html><h1>This is the body</h1></html>"
-            },
-            "recipients": {
-                "to": [
-                    {
-                        "address": "monyorojoseph@gmail.com",
-                        "displayName": "Customer Name"
-                    }
-                ]
-            },
-            "senderAddress": "DoNotReply@ca9b7e75-d7a9-4572-a819-7686814b307f.azurecomm.net"
+            "content": content,
+            "recipients": { "to": recipients },
+            "senderAddress": senderAddress
         }
 
         poller = email_client.begin_send(message)
-        print("Result: " + poller.result())
+        resp = poller.result()
+
+        status = resp['status']
+        if status == 'Succeded':
+            pass
+        error = resp['error']
+        if error:
+            logger.error('Error:')
+            logger.error(error)
 
     except Exception as ex:
-        print('Exception:')
-        print(ex)
+        logger.error('Exception:')
+        logger.error(ex)

@@ -6,6 +6,7 @@ import { AgreementUserType } from "../../..";
 import ProgressStep from "../progressStep";
 import { X } from "lucide-react";
 import { AgreementType } from "../../../../types/agreement.type";
+import 'react-credit-cards-2/dist/es/styles-compiled.css';
 
 
 const   BuyerForm = ({setUserType}: {setUserType: (userType: AgreementUserType) => void}) => {

@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { ToastContainer } from 'react-toastify';
 import './index.css'
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import App from './App.tsx'
 import SecurePayment from './secure_payment/index.tsx';
 import Auth from './auth/index.tsx';

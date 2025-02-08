@@ -39,7 +39,7 @@ const TableRow = ({ agreement, handleDelete, handleEdit, handleView, handleDispu
                 { agreement.status === 'active' && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleDispute(agreement.id)}> Dispute </button>}
-                {agreement.status !== 'pending' && 
+                {agreement.status === 'pending' && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleDelete(agreement.id)}> Delete </button>}
             </td>

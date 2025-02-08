@@ -1,4 +1,5 @@
 import uuid
+import logging
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.serializers.json import DjangoJSONEncoder
@@ -6,6 +7,8 @@ from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, AFTER_UPDA
 
 
 from core.azure_communications import send_email
+
+logger = logging.getLogger(__name__)
 
 
 class MyUserManager(BaseUserManager):
@@ -61,7 +64,7 @@ class User(LifecycleModelMixin, AbstractBaseUser):
         pass
 
     def send_email_verification(self):
-        print("Email verification link sent to", self.email)
+        logger.info(f"Email verification link sent to {self.email}")
 
     
 
@@ -116,7 +119,7 @@ class PaymentAgreement(LifecycleModelMixin, models.Model):
     @hook(AFTER_CREATE, on_commit=True)
     def onCreateAgreement(self):
         # send email to the buyer
-        print("Email sent to", self.buyer_email)
+        logger.info(f"Email sent to {self.buyer_email}")
         send_email()
 
 class Dispute(models.Model):
