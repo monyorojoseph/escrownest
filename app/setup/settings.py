@@ -140,13 +140,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+PASSWORD_RESET_TIMEOUT = 86400
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+WEB_URL = os.environ.get("WEB_URL", "http://localhost:5173")
 
 CORS_ALLOW_CREDENTIALS = True
-
+CORS_ALLOWED_ORIGINS = [ WEB_URL, ]
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=90),
@@ -171,7 +170,7 @@ LOGGING = {
             "style": "{",
         },
         "simple": {
-            "format": "{levelname} {message}",
+            "format": "[ {levelname} ] {message}",
             "style": "{",
         },
     },

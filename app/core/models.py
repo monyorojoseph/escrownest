@@ -1,6 +1,10 @@
 import uuid
 import logging
 from django.db import models
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.utils.html import escape
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.serializers.json import DjangoJSONEncoder
 from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, AFTER_UPDATE
@@ -60,13 +64,37 @@ class User(LifecycleModelMixin, AbstractBaseUser):
     
     @hook(AFTER_CREATE, on_commit=True)
     def onCreateAccount(self):
-        # welcome email
         pass
 
     def send_email_verification(self):
-        logger.info(f"Email verification link sent to {self.email}")
-
-    
+        """Generate email verification token and send email"""
+        try:
+            token = default_token_generator.make_token(self)
+            uid = urlsafe_base64_encode(force_bytes(self.pk))
+            
+            email_body = f"""
+            <html>
+                <h1>Hello {escape(self.name)}.</h1>
+                <h6>Click here to verify your email: 
+                    <a href="http://localhost:5173/verification/email/{uid}/{token}/">Verify Email</a>
+                    The link is valid for 24 hours.
+                </h6>
+            </html>
+            """
+            
+            content = {
+                "subject": "Email Verification",
+                "html": email_body,
+            }
+            
+            recipients = [{"address": self.email, "displayName": self.name}]
+            send_email(content, recipients)
+            
+            logger.info(f"Email verification link sent to {self.email}")
+        
+        except Exception as e:
+            logger.error(f"Failed to send email: {e}")
+        
 
 class PaymentAgreement(LifecycleModelMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
     baseURL: 'http://127.0.0.1:8000',
-    timeout: 5000,
+    // timeout: 5000,
     headers: {'Content-Type': 'application/json'}
   });
 
@@ -19,12 +19,12 @@ axiosInstance.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-// axiosInstance.interceptors.response.use(function (response) {
-//   console.log({response});
-//   return response;
-// }, function (error) {
-//   console.log({error});
-//   return Promise.reject(error);
-// });
+axiosInstance.interceptors.response.use(function (response) {
+  console.log({response});
+  return response;
+}, function (error) {
+  console.log({error});
+  return Promise.reject(error);
+});
 
 export default axiosInstance;

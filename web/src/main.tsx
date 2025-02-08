@@ -19,6 +19,7 @@ import Disputes from './account/disputes/index.tsx';
 import Layout from './components/Layout.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import axiosInstance from './services/axios.ts';
+import EmailVerification from './verification/email.tsx';
 
 
 axiosInstance
@@ -33,7 +34,11 @@ createRoot(document.getElementById('root')!).render(
               <Route path="auth" element={<Auth />}>
                 <Route path='login' element={<Login />} />
                 <Route path="register" element={<Register />} />
+                <Route path="email_verification/:uid/:token"  element={<EmailVerification />} />
               </Route>
+
+              <Route path="verification/email/:uid/:token"  element={<EmailVerification />} />
+
               <Route path="/account" element={<AccountLayout />}> 
                 <Route path="agreements" element={<Agreements />} />
                 <Route path="transactions" element={<Transactions />} />

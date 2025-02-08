@@ -5,7 +5,7 @@ from core.models import User, PaymentAgreement
 class BaseUserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'phone_number']
+        fields = ['id', 'email', 'name', 'phone_number', 'email_verified']
 
 class PaymentAgreementSerializer(ModelSerializer):
     class Meta:

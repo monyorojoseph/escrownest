@@ -16,6 +16,7 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated  ] = useState(false);
+  
 
   useEffect(() => {
     const tokens = localStorage.getItem('tokens');
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.error('Registration failed');
     }
   };
+
 
 
   return (

@@ -4,36 +4,10 @@ from azure.communication.email import EmailClient
 
 logger = logging.getLogger(__name__)
 
-connection_string = os.environ.get('COMMUNICATION_SERVICES_CONNECTION_STRING', None)
-
-# {
-#     "content": {
-#         "subject": "Password Reset",
-#         "plainText": "This is the body",
-#         "html": "<html><h1>This is the body</h1></html>"
-#     },
-#     "recipients": {
-#         "to": [
-#             {
-#                 "address": "monyorojoseph@gmail.com",
-#                 "displayName": "Jonah"
-#             },
-
-#             {
-#                 "address": "monyorojoseph@outlook.com",
-#                 "displayName": "Joseph"
-#             },
-
-#             {
-#                 "address": "ygia35433@gmail.com",
-#                 "displayName": "Joseph"
-#             }
-#         ]
-#     },
-#     "senderAddress": "DoNotReply@binaryjinx.com"
-# }
 
 def send_email(content, recipients, senderAddress="DoNotReply@binaryjinx.com"):
+    connection_string = os.environ.get('COMMUNICATION_SERVICES_CONNECTION_STRING', None)
+
     if connection_string is None:
         logger.error('No connection string found')
         return

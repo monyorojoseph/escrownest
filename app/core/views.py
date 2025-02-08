@@ -1,5 +1,8 @@
 import logging
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -62,21 +65,46 @@ class AuthViewSetAPI(ViewSet):
             logger.error(e) 
             return Response({"message": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=False, methods=["POST"], url_path="email-verification")
-    def email_verification(self, request):
-        email = request.data.get("email")
-        if email:
-            user = User.objects.get(email=email)
+    @action(detail=False, methods=["POST"], url_path="verify-email")
+    def send_email_verification(self, request):
+        try:
+            user = User.objects.get(email=request.data.get("email"))
+            user.send_email_verification()
+            return Response(status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            logger.error("User doesn't exist")
+            return Response({"message": "User with this email does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(e)
+            return Response({"message": "Failed to send verification email"}, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    def get_user(self, uidb64):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))  # Decode and convert to string
+            user = User.objects.get(pk=uid)  # Get user by primary key
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        return user
+
+    @action(detail=False, methods=["get"], url_path="email-verification/(?P<uidb64>[^/.]+)/(?P<token>[^/.]+)")
+    def email_verification(self, request, uidb64, token):
+        user = self.get_user(uidb64)
+        
+        if not user:
+            return Response({"message": "Invalid user."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if default_token_generator.check_token(user, token):  # Check token against user
             user.email_verified = True
+            user.set_password(user.password)
             user.save()
             data = {
                 "tokens": get_tokens_for_user(user),
             }
             return Response(data, status=status.HTTP_200_OK)
-        return Response({"message": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"message": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
     
-    # def refresh_token(self, request):
-    #     return Response({"message": "Hello, World!"})
 
 class UserViewSetAPI(ViewSet):
     permission_classes = [ IsAuthenticated ]
