@@ -1,10 +1,11 @@
 import uuid
 import logging
+import random
+import string
+from datetime import timedelta
 from django.db import models
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
+from django.utils import timezone
 from django.utils.html import escape
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.serializers.json import DjangoJSONEncoder
 from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, AFTER_UPDATE
@@ -69,14 +70,15 @@ class User(LifecycleModelMixin, AbstractBaseUser):
     def send_email_verification(self):
         """Generate email verification token and send email"""
         try:
-            token = default_token_generator.make_token(self)
-            uid = urlsafe_base64_encode(force_bytes(self.pk))
+            token = UserVerificationToken.generate_unique_token()
+            UserVerificationToken.objects.create(
+                token = token, user = self, expires_on=timezone.now() + timedelta(hours=24))
             
             email_body = f"""
             <html>
                 <h1>Hello {escape(self.name)}.</h1>
                 <h6>Click here to verify your email: 
-                    <a href="http://localhost:5173/verification/email/{uid}/{token}/">Verify Email</a>
+                    <a href="http://localhost:5173/verification/verify_email/{self.id}/{token}/">Verify Email</a>
                     The link is valid for 24 hours.
                 </h6>
             </html>
@@ -94,7 +96,35 @@ class User(LifecycleModelMixin, AbstractBaseUser):
         
         except Exception as e:
             logger.error(f"Failed to send email: {e}")
-        
+
+class CustomToken(models.Model):
+    token = models.CharField(max_length=7, unique=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    expires_on = models.DateTimeField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+    @property
+    def is_active(self):
+        if not self.active:
+            return False
+        return self.expires_on is None or timezone.now() < self.expires_on
+    
+    @classmethod
+    def generate_unique_token(cls):
+        """Generate a unique 7-character token."""
+        while True:
+            token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+            if not cls.objects.filter(token=token).exists():
+                return token
+
+
+
+class UserVerificationToken(CustomToken):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 
 class PaymentAgreement(LifecycleModelMixin, models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

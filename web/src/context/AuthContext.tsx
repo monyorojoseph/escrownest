@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await axiosInstance.post('/api/auth/register/', { name, email, password }) as AxiosResponse;
     if (response.status === 201) {
       toast.success('Registration successful, email verification sent');
-      navigate('/auth/email-verification');
+      navigate('/verification/email');
     } else {
       toast.error('Registration failed');
     }

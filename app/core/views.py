@@ -1,8 +1,5 @@
 import logging
 from django.contrib.auth import authenticate
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -12,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import action
 
 from core.serializers import BaseUserSerializer, PaymentAgreementSerializer
-from core.models import User, PaymentAgreement
+from core.models import User, PaymentAgreement, UserVerificationToken
 from core.utils import get_tokens_for_user
 
 
@@ -79,31 +76,31 @@ class AuthViewSetAPI(ViewSet):
             return Response({"message": "Failed to send verification email"}, status=status.HTTP_400_BAD_REQUEST)
 
     
-    def get_user(self, uidb64):
+
+
+    @action(detail=False, methods=["get"], url_path="email-verification/(?P<uid>[^/.]+)/(?P<token>[^/.]+)")
+    def email_verification(self, request, uid, token):
         try:
-            uid = force_str(urlsafe_base64_decode(uidb64))  # Decode and convert to string
-            user = User.objects.get(pk=uid)  # Get user by primary key
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-        return user
+            user = User.objects.get(id=uid)
+            uvt = UserVerificationToken.objects.get(token=token)
 
-    @action(detail=False, methods=["get"], url_path="email-verification/(?P<uidb64>[^/.]+)/(?P<token>[^/.]+)")
-    def email_verification(self, request, uidb64, token):
-        user = self.get_user(uidb64)
-        
-        if not user:
-            return Response({"message": "Invalid user."}, status=status.HTTP_400_BAD_REQUEST)
+            if uvt.is_active:  # Check token against user
+                user.set_password(user.password)
+                user.email_verified = True
+                user.save()
+                uvt.active = False
+                uvt.save()
+                data = {
+                    "tokens": get_tokens_for_user(user),
+                }
+                return Response(data, status=status.HTTP_200_OK)
 
-        if default_token_generator.check_token(user, token):  # Check token against user
-            user.email_verified = True
-            user.set_password(user.password)
-            user.save()
-            data = {
-                "tokens": get_tokens_for_user(user),
-            }
-            return Response(data, status=status.HTTP_200_OK)
-
-        return Response({"message": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+        except ( User.DoesNotExist, UserVerificationToken.DoesNotExist):
+            return Response({"message": "Invalid user or token"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error(e)
+            return Response({"message": "Wrong verification link"}, status=status.HTTP_400_BAD_REQUEST)
     
 
 class UserViewSetAPI(ViewSet):

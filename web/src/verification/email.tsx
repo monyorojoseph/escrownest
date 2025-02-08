@@ -1,88 +1,36 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import { toast } from "react-toastify";
-import axiosInstance from "../services/axios";
-import { AxiosResponse } from "axios";
-
-const EmailVerification = () => {
-    const navigate = useNavigate();
-    const { uid, token } = useParams();
-    const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
-    const [message, setMessage] = useState('');
-
-    const verifyEmail = async (uid: string, token: string) => {
-        setLoading(true);
-        try {
-            const response = await axiosInstance.get(`/api/auth/email-verification/${uid}/${token}`) as AxiosResponse;
-            setLoading(false);
-            if (response.status === 200) {
-                setStatus('success');
-                setMessage('Your email has been successfully verified!');
-                toast.success('Email verification successful');
-                setTimeout(() => {
-                    navigate('/account/settings');
-                }, 3000);
-            }
-        } catch (error) {
-            setLoading(false);
-            setStatus('error');
-            setMessage('Email verification failed. The link may have expired or is invalid.');
-            toast.error('Email verification failed');
-        }
-    };
-
-    useEffect(() => {
-        if (uid && token) {
-            verifyEmail(uid, token);
-        } else {
-            setStatus('error');
-            setMessage('Invalid verification link. Please request a new verification email.');
-            toast.error('Invalid verification link');
-        }
-    }, [uid, token]);
-
+const EmailVerificationWaiting = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 bg-gray-50">
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-4">Email Verification</h1>
+                <div className="text-center space-y-6">
+                    <h1 className="text-3xl font-bold text-gray-900">Check Your Email</h1>
                     
-                    {loading && (
-                        <div className="space-y-4">
-                            <p className="text-gray-600">Please wait while we verify your email address...</p>
-                            <div className="flex justify-center">
-                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-sky-500 border-t-transparent"></div>
-                            </div>
-                        </div>
-                    )}
+                    <div className="text-sky-500">
+                        <svg className="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
 
-                    {status === 'success' && (
-                        <div className="space-y-4">
-                            <div className="text-green-500">
-                                <svg className="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <p className="text-gray-800 font-medium">{message}</p>
-                            <p className="text-gray-600 text-sm">Redirecting you to your account settings...</p>
-                        </div>
-                    )}
+                    <div className="space-y-4">
+                        <p className="text-gray-800">
+                            We've sent a verification email to your inbox. Please click the link in the email to verify your account.
+                        </p>
 
-                    {status === 'error' && (
-                        <div className="space-y-4">
-                            <div className="text-red-500">
-                                <svg className="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </div>
-                            <p className="text-gray-800 font-medium">{message}</p>
+                        <div className="text-sm text-gray-600 space-y-2">
+                            <p>The verification link will expire in 24 hours.</p>
+                            <p>If you don't see the email, please check your spam folder.</p>
                         </div>
-                    )}
+                    </div>
+
+                    <div className="pt-4">
+                        <p className="text-sm text-gray-500">
+                            Having trouble? Contact our support team for assistance.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
 
-export default EmailVerification;
+export default EmailVerificationWaiting;
