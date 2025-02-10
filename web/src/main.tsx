@@ -21,38 +21,44 @@ import { AuthProvider } from './context/AuthContext.tsx';
 import axiosInstance from './services/axios.ts';
 import EmailVerificationWaiting from './verification/email.tsx';
 import EmailVerification from './verification/verifiy_email.tsx';
+import GoogleCallback from './linking_accounts/google_callback.tsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 axiosInstance
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <BrowserRouter>
-      <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<App />} />
-              <Route path="auth" element={<Auth />}>
-                <Route path='login' element={<Login />} />
-                <Route path="register" element={<Register />} />
-                <Route path="email_verification/:uid/:token"  element={<EmailVerification />} />
+      <GoogleOAuthProvider 
+        clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<App />} />
+                <Route path="auth" element={<Auth />}>
+                  <Route path='login' element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                  <Route path="email_verification/:uid/:token"  element={<EmailVerification />} />
+                </Route>
+
+                <Route path="verification/verify_email/:uid/:token"  element={<EmailVerification />} />
+                <Route path="verification/email/"  element={<EmailVerificationWaiting />} />
+
+                <Route path="linking_accounts/google_callback/:token/:context"  element={<GoogleCallback />} />
+
+                <Route path="/account" element={<AccountLayout />}> 
+                  <Route path="agreements" element={<Agreements />} />
+                  <Route path="transactions" element={<Transactions />} />
+                  <Route path="disputes" element={<Disputes />} />   
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="notifications" element={<Notifications />} />
+                </Route>
+                <Route path="/secure_payment" element={<SecurePayment />} />
               </Route>
-
-              <Route path="verification/verify_email/:uid/:token"  element={<EmailVerification />} />
-              <Route path="verification/email/"  element={<EmailVerificationWaiting />} />
-
-
-              <Route path="/account" element={<AccountLayout />}> 
-                <Route path="agreements" element={<Agreements />} />
-                <Route path="transactions" element={<Transactions />} />
-                <Route path="disputes" element={<Disputes />} />   
-                <Route path="settings" element={<Settings />} />
-                <Route path="notifications" element={<Notifications />} />
-              </Route>
-              <Route path="/secure_payment" element={<SecurePayment />} />
-            </Route>
-          </Routes>
-          <ToastContainer />
-      </AuthProvider>
+            </Routes>
+            <ToastContainer />
+        </AuthProvider>
+      </GoogleOAuthProvider>
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )

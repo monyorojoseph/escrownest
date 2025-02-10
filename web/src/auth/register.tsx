@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext'; 
+import GoogleAuth from './components/GoogleAuth';
 
 export default function Register() {
   const { register } = useAuth();
@@ -91,19 +92,23 @@ export default function Register() {
         </div>
       </div>
 
-      <button
-        onClick={handleGoogleRegister}
-        className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-300 
-          bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 
-          transition-colors duration-300"
-      >
-        <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google"
-          className="h-5 w-5"
-        />
-        <span>Sign up with Google</span>
-      </button>
+      <GoogleAuth context="signup" />
     </div>
   );
 }
+
+
+
+{/* <button
+onClick={handleGoogleLogin}
+className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-300 
+  bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 
+  transition-colors duration-300"
+>
+<img
+  src="https://www.svgrepo.com/show/475656/google-color.svg"
+  alt="Google"
+  className="h-5 w-5"
+/>
+<span>Sign in with Google</span>
+</button> */}

@@ -11,6 +11,7 @@ from rest_framework.decorators import action
 from core.serializers import BaseUserSerializer, PaymentAgreementSerializer
 from core.models import User, PaymentAgreement, UserVerificationToken
 from core.utils import get_tokens_for_user
+from core.google_auth import verify_id_token
 
 
 logger = logging.getLogger(__name__)
@@ -62,8 +63,8 @@ class AuthViewSetAPI(ViewSet):
             logger.error(e) 
             return Response({"message": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=False, methods=["POST"], url_path="verify-email")
-    def send_email_verification(self, request):
+    @action(detail=False, methods=["POST"], url_path="verify-email") #TODO fix has security flaw
+    def request_email_verification(self, request):
         try:
             user = User.objects.get(email=request.data.get("email"))
             user.send_email_verification()
@@ -102,6 +103,46 @@ class AuthViewSetAPI(ViewSet):
             logger.error(e)
             return Response({"message": "Wrong verification link"}, status=status.HTTP_400_BAD_REQUEST)
     
+
+
+    # google auth login/registration
+    @action(methods=['POST'], detail=False, url_path="google")
+    def google_auth(self, request):
+        try:
+            id_token = request.data.get("token", None)
+            context = request.data.get("context", None)
+            if context == None or id_token == None:
+                raise ValueError("context or token is not known")
+            id_token_info = verify_id_token(id_token)
+
+            print(id_token_info, context)
+
+            if context == "signin":
+                user = User.objects.get(email=id_token_info['email'])
+            elif context == "signup":
+                if User.objects.filter(email=id_token_info["email"]).exists():
+                    user = User.objects.get(email=id_token_info["email"])
+                else:
+                    user = User.objects.create(
+                        email=id_token_info['email'], name=id_token_info['name'], 
+                        email_verified=id_token_info['email_verified'])
+                
+                if not user.email_verified:
+                    user.send_email_verification()
+                
+            
+            tokens = get_tokens_for_user(user)
+            data = {
+                "user": BaseUserSerializer(user).data,
+                "tokens": tokens,
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"message": "User doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error(e)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class UserViewSetAPI(ViewSet):
     permission_classes = [ IsAuthenticated ]

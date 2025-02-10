@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
+import GoogleAuth from './components/GoogleAuth';
 
 export default function Login() {
   const { login } = useAuth();
@@ -75,20 +76,7 @@ export default function Login() {
           <span className="bg-white px-2 text-gray-500">Or continue with</span>
         </div>
       </div>
-
-      <button
-        onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-300 
-          bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 
-          transition-colors duration-300"
-      >
-        <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google"
-          className="h-5 w-5"
-        />
-        <span>Sign in with Google</span>
-      </button>
+      <GoogleAuth context="signin" />
     </div>
   );
 }

@@ -6,4 +6,5 @@ djangorestframework_simplejwt==5.4.0
 pillow==11.1.0
 python-dotenv==1.0.1
 azure-communication-email==1.0.0
-authorizenet==1.1.5
+# authorizenet==1.1.5
+google-auth==2.38.0
