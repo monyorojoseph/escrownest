@@ -56,8 +56,15 @@ const AgreementReview = ({setStep, agreement}:
                 Cancel
               </button>
               <button
-                onClick={() => setStep(3)}
-                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600">
+                disabled={agreement.status !== 'pending'}
+                onClick={() => {
+                  if(agreement.status === 'pending') {
+                    setStep(3)
+                  }else{
+                    toast.error('You not allowed to proceed, only for pending agreements.')
+                  }
+                }}
+                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600 disabled:opacity-50">
                 Proceed
               </button>
             </div>

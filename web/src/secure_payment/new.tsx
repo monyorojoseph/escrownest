@@ -17,6 +17,7 @@ export type AgreementInputData = {
     document?: File;
     transaction_type: string;
     days_to_deliver: string;
+    days_to_dispute: string;
     extra_data?: any;
 }
 
@@ -34,6 +35,7 @@ const NewAgreement = () => {
         formData.append('transaction_type', formInputData.transaction_type);
         formData.append('description', formInputData.description);
         formData.append('days_to_deliver', formInputData.days_to_deliver);
+        formData.append('days_to_dispute', formInputData.days_to_dispute);
         // optional fields
         formInputData.amount_breakdown && formData.append('amount_breakdown', formInputData.amount_breakdown);
         formInputData.document && formData.append('document', formInputData.document);
@@ -43,7 +45,6 @@ const NewAgreement = () => {
     const handleSubmit = async() => {
         const toastId = toast.loading('Creating agreement...');
         const response = await postingData('/api/payment-agreement/create/', formData) as AxiosResponse;
-        console.log({ response });
         if(response?.status === 201) {
           setAgreement(response.data);
           toast.update(toastId, {

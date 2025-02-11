@@ -29,7 +29,7 @@ const AgreementDetails = ({ agreement }: { agreement: any }) => {
                   <div className="font-medium">{agreement?.days_to_deliver}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500">Seller Email</div>
+                  <div className="text-sm text-gray-500">Buyer Email</div>
                   <div className="font-medium">{agreement?.buyer_email}</div>
                 </div>
             </div>

@@ -1,10 +1,20 @@
 import { ArrowRight } from "lucide-react"
-import { AgreementInputData } from "./form"
 import { toast } from "react-toastify";
+import { AgreementInputData } from "../../../new";
 
 const PaymentDetails = ({ formInputData, setFormInputData, setFormStep }: 
     { formInputData: AgreementInputData, setFormInputData: (formInputData: AgreementInputData ) => void, 
       setFormStep: (formStep: number) => void }) => {
+
+    const formatWithCommas = (value: string) => {
+      if (!value) return '';
+      // Remove all non-numeric characters
+      const numericValue = value.replace(/[^0-9]/g, '');
+      // Add thousand separators
+      return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    console.log(formInputData.amount)
     return (
     <div className="space-y-6">
         <div>
@@ -40,11 +50,13 @@ const PaymentDetails = ({ formInputData, setFormInputData, setFormStep }:
               <span className="text-gray-500">KES</span>
             </div>
             <input
-              type="number"
-              name="amount"
-              value={formInputData.amount}
-              onChange={(e) => setFormInputData({ ...formInputData, amount: e.target.value })}
-              className="pl-8 w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
+              type="text"
+              name="amount" maxLength={15}
+              value={formatWithCommas(formInputData.amount)}
+              onChange={(e) => {
+                setFormInputData({ ...formInputData, amount: e.target.value.replace(/,/g, '') });
+              }}
+              className="pl-16 w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
               placeholder="0.00"
             />
           </div>

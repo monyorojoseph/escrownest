@@ -1,4 +1,6 @@
 import logging
+from django.db.models import Q
+from django.utils import timezone
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
@@ -169,12 +171,14 @@ class PaymentAgreementViewSetAPI(ViewSet):
     @action(detail=False, methods=["POST"], url_path="create")
     def create_agreement(self, request):
         data = request.data
-        if data['buyer_email'] and data['name'] and data['amount'] and data['transaction_type'] and data['description'] and data['days_to_deliver']:
+        if data['buyer_email'] and data['name'] and data['amount']  \
+            and data['transaction_type'] and data['description']  \
+            and data['days_to_deliver'] and data['days_to_dispute']:
             agreement = PaymentAgreement.objects.create(**data, seller=request.user)
 
-            buyer = User.objects.filter(email=data['buyer_email'])
-            if buyer.exists():
-                agreement.buyer = buyer.first()
+            user = User.objects.filter(email=data['buyer_email'])
+            if user.exists():
+                agreement.buyer = user.first()
             
             agreement.save()
             agreement.refresh_from_db()
@@ -191,14 +195,15 @@ class PaymentAgreementViewSetAPI(ViewSet):
     
     @action(detail=False, methods=["GET"], url_path="list")
     def list_agreements(self, request):
-        agreements = PaymentAgreement.objects.filter(seller=request.user)
+        user = request.user
+        agreements = PaymentAgreement.objects.filter(Q(seller=user) | Q(buyer_email=user.email) | Q(buyer=user))
         serializer = PaymentAgreementSerializer(agreements, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=["PUT"], url_path="update")
     def change_agreement(self, request, pk):
         agreement = PaymentAgreement.objects.get(pk=pk)
-        if agreement.status == PaymentAgreement.PENDING:
+        if agreement.status == PaymentAgreement.PENDING and agreement.seller == request.user:
             data = request.data
             for key, value in data.items():
                 setattr(agreement, key, value)
@@ -207,13 +212,15 @@ class PaymentAgreementViewSetAPI(ViewSet):
             serializer = PaymentAgreementSerializer(agreement)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "You can't update active, complete or disputed agreement."}, status=status.HTTP_400_BAD_REQUEST)
+            logger.error("You can't update active, complete or disputed agreement, or you not the seller")
+            return Response({"message": "Failed to update."}, status=status.HTTP_400_BAD_REQUEST)
         
         
     @action(detail=True, methods=["PUT"], url_path="dispute")
     def dispute_agreement(self, request, pk):
         agreement = PaymentAgreement.objects.get(pk=pk)
-        if agreement.status !=  PaymentAgreement.ACTIVE:
+        if agreement.status != PaymentAgreement.ACTIVE and agreement.buyer == request.user  \
+            and (timezone.now() - agreement.created_at).days <= agreement.days_to_dispute:
             agreement.status = PaymentAgreement.DISPUTED
             agreement.save()
             agreement.refresh_from_db()
@@ -221,11 +228,15 @@ class PaymentAgreementViewSetAPI(ViewSet):
             # create dispute and start processing refund ( notify seller and buyer )
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "You can only dispute active agreement."}, status=status.HTTP_400_BAD_REQUEST)
+            logger.error("You can only dispute active agreement, or you not the buyer")
+            return Response({"message": "Failed to dispute."}, status=status.HTTP_400_BAD_REQUEST)
         
     
     @action(detail=True, methods=["PUT"], url_path="delete")
     def delete(self, request, pk):
         agreement = PaymentAgreement.objects.get(pk=pk)
-        agreement.delete()
-        return Response({"message": "Agreement deleted successfully."}, status=status.HTTP_200_OK)
+        if agreement.seller == request.user:
+            agreement.delete()
+            return Response({"message": "Agreement deleted successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "You not allowed to delete"}, status=status.HTTP_400_BAD_REQUEST)

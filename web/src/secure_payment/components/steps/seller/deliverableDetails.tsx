@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react"
-import { AgreementInputData } from "./form"
+import { AgreementInputData } from "../../../new"
 import { toast } from "react-toastify"
 import { useState } from "react"
 
@@ -21,9 +21,35 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
             value={formInputData.days_to_deliver}
             onChange={(e) => setFormInputData({ ...formInputData, days_to_deliver: e.target.value })}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-            placeholder="e.g., 14 days"/>
+            placeholder="e.g., 14 days"
+            readOnly
+            title="This cannot be updated after creation"/>
+          <p className="text-xs text-red-500 font-semibold">
+            This cannot be changed after creation.
+          </p>
           <p className="mt-1 text-sm text-gray-500">
-            This is the period within which you must deliver the product/service, failure to deliver within this period money will be refunded to the buyer
+            This is the period within which you must deliver the product/service, failure to deliver within this period money will be refunded to the buyer. 
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Days to dispute
+          </label>
+          <input
+            type="text"
+            name="disputePeriod"
+            value={formInputData.days_to_dispute}
+            onChange={(e) => setFormInputData({ ...formInputData, days_to_dispute: e.target.value })}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
+            placeholder="e.g., 7 days"
+            readOnly
+            title="This cannot be updated after creation"/>
+          <p className="text-xs text-red-500 font-semibold">
+            This cannot be changed after creation.
+          </p>
+          <p className="mt-1 text-sm text-gray-500">
+            This is the period within which the buyer can dispute the agreement if they are not interested with the product/service anymore. 
           </p>
         </div>
   
@@ -52,7 +78,7 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
           </button>
           <button disabled={loading}
             onClick={async () => {
-              if (formInputData.days_to_deliver && formInputData.buyer_email) {
+              if (formInputData.days_to_deliver && formInputData.buyer_email && formInputData.days_to_dispute) {
                 setLoading(true)
                 await handleSubmit()
                 setLoading(false)
