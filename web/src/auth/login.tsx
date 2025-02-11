@@ -17,9 +17,6 @@ export default function Login() {
     setLoading(false);
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-  };
 
   return (
     <div className="space-y-6">

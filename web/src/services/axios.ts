@@ -8,23 +8,15 @@ const axiosInstance = axios.create({
 
 
 axiosInstance.interceptors.request.use(function (config) {
-    const tokens = localStorage.getItem('tokens');
-    if (tokens) {
+  const tokens = localStorage.getItem('tokens');
+  if (tokens) {
       const parsedTokens = JSON.parse(tokens);
       const accessToken = parsedTokens.access;
       config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return config;
   }, function (error) {
-    return Promise.reject(error);
-});
-
-axiosInstance.interceptors.response.use(function (response) {
-  console.log({response});
-  return response;
-}, function (error) {
-  console.log({error});
-  return Promise.reject(error);
-});
+    return error;
+})
 
 export default axiosInstance;

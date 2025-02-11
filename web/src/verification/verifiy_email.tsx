@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import axiosInstance from "../services/axios";
+import { fetcher } from "../services/utils";
 import { AxiosResponse } from "axios";
 
 const EmailVerification = () => {
@@ -14,7 +14,7 @@ const EmailVerification = () => {
     const verifyEmail = async (uid: string, token: string) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get(`/api/auth/email-verification/${uid}/${token}/`) as AxiosResponse;
+            const response = await fetcher(`/api/auth/email-verification/${uid}/${token}/`) as AxiosResponse;
             setLoading(false);
             if (response.status === 200) {
                 setStatus('success');

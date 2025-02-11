@@ -28,15 +28,21 @@ const Navbar = () => {
         <div className={`lg:flex items-center gap-8 ${isOpen ? 'absolute top-16 left-0 right-0 flex flex-col bg-white p-4 border-b border-gray-100 shadow-sm' : 'hidden'}`}>
           {isAuthenticated ? (
             <>
-              <Link to="/secure_payment" 
+              <Link to="/secure_payment/new" 
                 className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 
                 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
-                New Agreement
+                Create 
               </Link>
-              <Link to="/account/settings" 
+              <Link to="/secure_payment/activate" 
                 className="text-gray-600 hover:text-sky-600 font-medium text-sm relative after:absolute after:bottom-0 after:left-0 
                 after:h-0.5 after:w-0 hover:after:w-full after:bg-sky-600 after:transition-all">
-                Settings
+                Activate
+              </Link>
+              <Link to="/account/settings"
+                className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
               </Link>
             </>
           ) : (

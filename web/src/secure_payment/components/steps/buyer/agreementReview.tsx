@@ -3,8 +3,8 @@ import { AgreementType } from "../../../../types/agreement.type"
 import { toast } from "react-toastify"
 import { AxiosResponse } from "axios"
 import { useState } from "react"
-import axiosInstance from "../../../../services/axios"
 import { useNavigate } from "react-router"
+import { updateItem } from "../../../../services/utils"
 
 const AgreementReview = ({setStep, agreement}: 
   {setStep: (step: number) => void, agreement: AgreementType}) => {
@@ -15,7 +15,7 @@ const AgreementReview = ({setStep, agreement}:
     const updateAgreement = async(status: string) => {
         const toastId = toast.loading('Updating agreement...')
         setLoading(true)
-        const response = await axiosInstance.put(`/api/payment-agreement/${agreement?.id}/update/`, {status: status}) as AxiosResponse
+        const response = await updateItem(`/api/payment-agreement/${agreement?.id}/update/`, {status: status}) as AxiosResponse
         setLoading(false)
         if(response.status === 200) {
             toast.update(toastId, {

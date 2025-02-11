@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { getUser } from '../../hooks/getUser';
-import axiosInstance from '../../services/axios';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
+import { postingData } from '../../services/utils';
 
 
 const EyeIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -116,7 +116,7 @@ const UserSecurity: React.FC = () => {
 
   const handleEmailVerification = async() => {
     setVerifying(true);
-    const response = await axiosInstance.post('/api/auth/verify-email/', { email: user?.email }) as AxiosResponse;
+    const response = await postingData('/api/auth/verify-email/', { email: user?.email }) as AxiosResponse;
     console.log(response);
     setVerifying(false);
     if (response.status === 200) {

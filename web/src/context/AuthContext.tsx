@@ -1,11 +1,12 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import axiosInstance from '../services/axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { AxiosResponse } from 'axios';
+import { postingData } from '../services/utils';
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
   logout: () => void;
   login: ({ email, password }: { email: string, password: string }) => void;
   register: ({ name, email, password }: { name: string, email: string, password: string }) => void;
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const logout = async() => {
-    const response = await axiosInstance.post('/api/auth/logout/') as AxiosResponse;  
+    const response = await postingData('/api/auth/logout/', {}) as AxiosResponse;  
     if (response.status === 200) {
       toast.success('Logout successful');
       localStorage.removeItem('tokens');
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async ({ email, password }: { email: string, password: string }) => {
-    const response = await axiosInstance.post('/api/auth/login/', { email, password }) as AxiosResponse;  
+    const response = await postingData('/api/auth/login/', { email, password }) as AxiosResponse;  
     if (response.status === 200) {
       setIsAuthenticated(true);
       toast.success('Login successful, you will be redirected to the dashboard');
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };  
 
   const register = async ({ name, email, password }: { name: string, email: string, password: string }) => {
-    const response = await axiosInstance.post('/api/auth/register/', { name, email, password }) as AxiosResponse;
+    const response = await postingData('/api/auth/register/', { name, email, password }) as AxiosResponse;
     if (response.status === 201) {
       toast.success('Registration successful, email verification sent');
       navigate('/verification/email');
@@ -62,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, logout, login, register }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, logout, login, register }}>
       {children}
     </AuthContext.Provider>
   );

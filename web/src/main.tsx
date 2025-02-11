@@ -23,6 +23,9 @@ import EmailVerificationWaiting from './verification/email.tsx';
 import EmailVerification from './verification/verifiy_email.tsx';
 import GoogleCallback from './linking_accounts/google_callback.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import NewAgreement from './secure_payment/new.tsx';
+import ActivateAgreement from './secure_payment/activate.tsx';
+
 
 axiosInstance
 
@@ -53,7 +56,10 @@ createRoot(document.getElementById('root')!).render(
                   <Route path="settings" element={<Settings />} />
                   <Route path="notifications" element={<Notifications />} />
                 </Route>
-                <Route path="/secure_payment" element={<SecurePayment />} />
+                <Route path="/secure_payment" element={<SecurePayment />} >
+                  <Route path="new" element={<NewAgreement />} />
+                  <Route path="activate" element={<ActivateAgreement />} />
+                </Route>
               </Route>
             </Routes>
             <ToastContainer />

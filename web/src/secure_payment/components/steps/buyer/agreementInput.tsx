@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useAuth } from "../../../../context/AuthContext"
 import { AxiosResponse } from "axios"
-import axiosInstance from "../../../../services/axios"
 import { AgreementType } from "../../../../types/agreement.type"
 import { toast } from "react-toastify"
+import { fetcher } from "../../../../services/utils"
 
 const AgreementInput = ({setStep, setAgreement}: 
     {setStep: (step: number) => void, setAgreement: (agreement: AgreementType) => void}) => {
@@ -24,7 +24,7 @@ const AgreementInput = ({setStep, setAgreement}:
 
         const toastId = toast.loading('Fetching agreement...')
         setLoading(true)
-        const response = await axiosInstance.get(`/api/payment-agreement/${value}/get/`) as AxiosResponse;
+        const response = await fetcher(`/api/payment-agreement/${value}/get/`) as AxiosResponse;
         setLoading(false)
         console.log({ response })
         if(response.status === 200) {

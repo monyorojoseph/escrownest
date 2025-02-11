@@ -6,7 +6,6 @@ const GoogleAuth = ({ context }: { context: 'signin' | 'signup' }) => {
     const navigate = useNavigate();
 
     const handleSuccess = (credentialResponse: any) => {
-        console.log({ credentialResponse });
         navigate(`/linking_accounts/google_callback/${credentialResponse.credential}/${context}`);
     }
 

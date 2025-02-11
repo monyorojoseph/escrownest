@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AgreementType } from '../../types/agreement.type';
 import { getAgreements } from '../../hooks/getAgreements';
 import MobileCardView from './components/mobileCardView';
 import TableRow from './components/tableRow';
-import axiosInstance from '../../services/axios';
 import { toast } from 'react-toastify';
-
+import { deleteItem, fetcher } from '../../services/utils';
+import { AxiosResponse } from 'axios';
 
 
 const Agreements: React.FC = () => {
   const { agreements, isLoading, mutate } = getAgreements();
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   const handleDelete = async (id: string) => {
     const toastId = toast.loading("Deleting agreement...");
-    const response = await axiosInstance.delete(`/api/payment-agreement/${id}/delete/`);
+    const response = await deleteItem(`/api/payment-agreement/${id}/delete/`) as AxiosResponse;
     if(response.status === 200){
       await mutate();
       toast.update(toastId, {
@@ -29,7 +30,7 @@ const Agreements: React.FC = () => {
 
   const handleEdit = async (id: string) => {
     const toastId = toast.loading("Editing agreement...");
-    const response = await axiosInstance.get(`/api/payment-agreement//${id}/edit`);
+    const response = await fetcher(`/api/payment-agreement//${id}/edit`) as AxiosResponse;
     if(response.status === 200){
       await mutate();
       toast.update(toastId, {
@@ -48,7 +49,7 @@ const Agreements: React.FC = () => {
 
   const handleDispute = async (id: string) => {
     const toastId = toast.loading("Disputing agreement...");
-    const response = await axiosInstance.get(`/api/payment-agreement/${id}dispute//`);
+    const response = await fetcher(`/api/payment-agreement/${id}dispute//`) as AxiosResponse;
     if(response.status === 200){
       await mutate();
       toast.update(toastId, {
@@ -64,6 +65,23 @@ const Agreements: React.FC = () => {
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
       <h1 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Agreements</h1>
+      <div className="mb-6 max-w-2xl">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search agreements..."
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg shadow-sm 
+            placeholder:text-gray-400 focus:ring-2 focus:ring-sky-500 focus:border-sky-500
+            transition duration-200"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </div>
       
       {isLoading ? (
         <div className="flex justify-center items-center h-48">

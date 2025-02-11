@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import axiosInstance from "../services/axios";
 import { toast } from "react-toastify";
-
+import { useAuth } from "../context/AuthContext";
+import { postingData } from "../services/utils";
+import { AxiosResponse } from "axios";
 const GoogleCallback = () => {
     const navigate = useNavigate();
+    const { setIsAuthenticated } = useAuth();
     const { token, context } = useParams();
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
     const handleGoogleAuth = async () => {
         setLoading(true);
-        const response = await axiosInstance.post(`/api/auth/google/`, { token, context });
+        const response = await postingData(`/api/auth/google/`, { token, context }) as AxiosResponse;
         setLoading(false);
         if (response.status === 200) {
             localStorage.setItem('tokens', JSON.stringify(response.data.tokens));
+            setIsAuthenticated(true);
             setStatus('success');
             toast.success('Google authentication successful, you will be redirected to your dashboard');
             setTimeout(() => {
@@ -22,7 +25,7 @@ const GoogleCallback = () => {
             }, 3000);
         } else {
             setStatus('error');
-            toast.error('Google authentication failed, please try again');
+            toast.error(response?.data?.message || 'Google authentication failed, please try again');
             setTimeout(() => {
                 navigate('/auth/login');
             }, 3000);

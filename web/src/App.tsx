@@ -16,7 +16,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/secure_payment"
+              to="/secure_payment/new"
               className="inline-flex items-center bg-sky-500 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-lg 
               text-base sm:text-lg font-semibold hover:bg-sky-600 transition duration-300 shadow-lg hover:shadow-xl">
               <span className="text-base sm:text-lg">Try It Now</span> <ChevronRight className="ml-2 h-5 w-5" />

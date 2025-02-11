@@ -76,8 +76,6 @@ class AuthViewSetAPI(ViewSet):
             logger.error(e)
             return Response({"message": "Failed to send verification email"}, status=status.HTTP_400_BAD_REQUEST)
 
-    
-
 
     @action(detail=False, methods=["get"], url_path="email-verification/(?P<uid>[^/.]+)/(?P<token>[^/.]+)")
     def email_verification(self, request, uid, token):
@@ -104,7 +102,6 @@ class AuthViewSetAPI(ViewSet):
             return Response({"message": "Wrong verification link"}, status=status.HTTP_400_BAD_REQUEST)
     
 
-
     # google auth login/registration
     @action(methods=['POST'], detail=False, url_path="google")
     def google_auth(self, request):
@@ -113,9 +110,8 @@ class AuthViewSetAPI(ViewSet):
             context = request.data.get("context", None)
             if context == None or id_token == None:
                 raise ValueError("context or token is not known")
+            
             id_token_info = verify_id_token(id_token)
-
-            print(id_token_info, context)
 
             if context == "signin":
                 user = User.objects.get(email=id_token_info['email'])
@@ -139,7 +135,7 @@ class AuthViewSetAPI(ViewSet):
 
             return Response(data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response({"message": "User doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "User doesn't exist, create an account."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.error(e)
             return Response(status=status.HTTP_400_BAD_REQUEST)
