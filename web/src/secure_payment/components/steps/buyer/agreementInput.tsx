@@ -59,7 +59,7 @@ const AgreementInput = ({setStep, setAgreement}:
                     value={agreementId}
                     onChange={(e) => setAgreementId(e.target.value)}
                     className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
-                    placeholder="ESC-XXXXXX"
+                    placeholder="XXXXXX"
                 />
             </div>
 

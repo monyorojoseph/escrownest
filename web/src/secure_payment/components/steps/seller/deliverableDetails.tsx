@@ -16,13 +16,12 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
             Days to deliver {formInputData.name}
           </label>
           <input
-            type="text"
+            type="number"
             name="deliveryPeriod"
             value={formInputData.days_to_deliver}
             onChange={(e) => setFormInputData({ ...formInputData, days_to_deliver: e.target.value })}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
             placeholder="e.g., 14 days"
-            readOnly
             title="This cannot be updated after creation"/>
           <p className="text-xs text-red-500 font-semibold">
             This cannot be changed after creation.
@@ -37,13 +36,12 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
             Days to dispute
           </label>
           <input
-            type="text"
+            type="number"
             name="disputePeriod"
             value={formInputData.days_to_dispute}
             onChange={(e) => setFormInputData({ ...formInputData, days_to_dispute: e.target.value })}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-            placeholder="e.g., 7 days"
-            readOnly
+            placeholder="e.g., 7 days" max={formInputData.days_to_deliver}
             title="This cannot be updated after creation"/>
           <p className="text-xs text-red-500 font-semibold">
             This cannot be changed after creation.

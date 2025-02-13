@@ -8,7 +8,7 @@ const AgreementReview = ({ agreement }: { agreement: any }) => {
         <div className="mb-6 bg-green-50 border border-green-200 rounded-lg">
           <div className="text-center">
             <div className="text-sm text-gray-600 mb-2">Share this Agreement ID with the buyer:</div>
-            <div className="text-2xl font-mono font-bold text-green-600">ESC-{agreement?.id}</div>
+            <div className="text-2xl font-mono font-bold text-green-600">{agreement?.id}</div>
           </div>
         </div>
         <AgreementDetails agreement={agreement} />

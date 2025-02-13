@@ -230,7 +230,7 @@ class PaymentAgreement(LifecycleModelMixin, models.Model):
                     </p>
                     
                     <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                        <p style="margin: 5px 0;"><strong>Agreement ID:</strong> ESC-{self.id}</p>
+                        <p style="margin: 5px 0;"><strong>Agreement ID:</strong>{self.id}</p>
                         <p style="margin: 5px 0;"><strong>Product Name:</strong> {self.name}</p>
                         <p style="margin: 5px 0;"><strong>Amount:</strong> {self.amount} {self.currency}</p>
                         <p style="margin: 5px 0;"><strong>Description:</strong> {self.description}</p>
@@ -259,7 +259,7 @@ class PaymentAgreement(LifecycleModelMixin, models.Model):
         """
 
         content = {
-            "subject": f"New Payment Agreement ESC-{self.id}",
+            "subject": f"New Payment Agreement {self.id}",
             "html": email_body,
         }
         recipients = [{"address": self.buyer_email, "displayName": self.buyer.name if self.buyer else "Buyer"}]
