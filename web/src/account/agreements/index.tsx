@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AgreementType } from '../../types/agreement.type';
 import { getAgreements } from '../../hooks/getAgreements';
-import MobileCardView from './components/mobileCardView';
 import TableRow from './components/tableRow';
 import { toast } from 'react-toastify';
 import { deleteItem, fetcher } from '../../services/utils';
@@ -89,16 +88,8 @@ const Agreements: React.FC = () => {
         </div>
       ) : agreements && agreements.length > 0 ? (
         <>
-          {/* Mobile view - card layout */}
-          <div className="block sm:hidden">
-            <div className="space-y-4">
-              {agreements.map((agreement: AgreementType) => (
-                <MobileCardView agreement={agreement} handleDelete={handleDelete} handleEdit={handleEdit} />))}
-            </div>
-          </div>
-
           {/* Desktop view - table layout */}
-          <div className="hidden sm:block">
+          <div className="overflow-x-auto">
             <div className="bg-white rounded-lg shadow overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -113,7 +104,7 @@ const Agreements: React.FC = () => {
                       Payment Type
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Deadline
+                      Deadline In
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created
@@ -129,7 +120,7 @@ const Agreements: React.FC = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {agreements.map((agreement: AgreementType) => (
                     <TableRow agreement={agreement} handleDelete={handleDelete} handleEdit={handleEdit} 
-                    handleView={handleView} handleDispute={handleDispute} />
+                    handleDispute={handleDispute} />
                   ))}
                 </tbody>
               </table>

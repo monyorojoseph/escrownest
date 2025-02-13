@@ -205,6 +205,7 @@ class PaymentAgreementViewSetAPI(ViewSet):
         agreement = PaymentAgreement.objects.get(pk=pk)
         if agreement.status == PaymentAgreement.PENDING and agreement.seller == request.user:
             data = request.data
+            data.pop("status", None)
             for key, value in data.items():
                 setattr(agreement, key, value)
             agreement.save()
@@ -219,7 +220,7 @@ class PaymentAgreementViewSetAPI(ViewSet):
     @action(detail=True, methods=["PUT"], url_path="dispute")
     def dispute_agreement(self, request, pk):
         agreement = PaymentAgreement.objects.get(pk=pk)
-        if agreement.status != PaymentAgreement.ACTIVE and agreement.buyer == request.user  \
+        if agreement.status == PaymentAgreement.ACTIVE and agreement.buyer == request.user  \
             and (timezone.now() - agreement.created_at).days <= agreement.days_to_dispute:
             agreement.status = PaymentAgreement.DISPUTED
             agreement.save()
@@ -229,7 +230,21 @@ class PaymentAgreementViewSetAPI(ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             logger.error("You can only dispute active agreement, or you not the buyer")
-            return Response({"message": "Failed to dispute."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Failed to dispute."}, status=status.HTTP_400_BAD_REQUEST)\
+            
+    @action(detail=True, methods=["PUT"], url_path="cancel")
+    def cancel_agreement(self, request, pk):
+        agreement = PaymentAgreement.objects.get(pk=pk)
+        if agreement.status == PaymentAgreement.PENDING and agreement.buyer == request.user:
+            agreement.status = PaymentAgreement.CANCELED
+            agreement.save()
+            agreement.refresh_from_db()
+            serializer = PaymentAgreementSerializer(agreement)
+            # create dispute and start processing refund ( notify seller and buyer )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            logger.error("You can only cancel pending agreement, or you not the buyer")
+            return Response({"message": "Failed to cancel."}, status=status.HTTP_400_BAD_REQUEST)
         
     
     @action(detail=True, methods=["PUT"], url_path="delete")

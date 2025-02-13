@@ -12,26 +12,22 @@ const AgreementReview = ({setStep, agreement}:
 
     const [loading, setLoading] = useState(false)
 
-    const updateAgreement = async(status: string) => {
-        const toastId = toast.loading('Updating agreement...')
+    const handleCancelAgreement = async() => {
+        const toastId = toast.loading('Cancelling agreement...')
         setLoading(true)
-        const response = await updateItem(`/api/payment-agreement/${agreement?.id}/update/`, {status: status}) as AxiosResponse
+        const response = await updateItem(`/api/payment-agreement/${agreement?.id}/cancel/`, {}) as AxiosResponse
         setLoading(false)
         if(response.status === 200) {
             toast.update(toastId, {
-                render: status === "cancelled" ? 'Agreement cancelled successfully' : 'Agreement activated successfully',
+                render: 'Agreement cancelled successfully',
                 type: 'success',
                 isLoading: false,
                 autoClose: 2000
             })
-            if(status === "cancelled") {
                 navigate('/account/agreements')
-            } else {
-                setStep(3)
-            }
         }else{
             toast.update(toastId, {
-                render: status === "cancelled" ? 'Failed to cancel agreement' : 'Failed to activate agreement',
+                render: 'Failed to cancel agreement',
                 type: 'error',
                 isLoading: false,
                 autoClose: 2000
@@ -51,7 +47,7 @@ const AgreementReview = ({setStep, agreement}:
 
             <div className="flex justify-left items-center space-x-2">
               <button disabled={loading}
-                onClick={() => updateAgreement('cancelled')}
+                onClick={() => handleCancelAgreement()}
                 className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
                 Cancel
               </button>

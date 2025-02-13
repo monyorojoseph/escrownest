@@ -37,7 +37,7 @@ const NewAgreement = () => {
         formData.append('days_to_deliver', formInputData.days_to_deliver);
         formData.append('days_to_dispute', formInputData.days_to_dispute);
         // optional fields
-        formInputData.amount_breakdown && formData.append('amount_breakdown', formInputData.amount_breakdown);
+        formInputData.amount_breakdown && formData.append('amount_breakdown', JSON.stringify(formInputData.amount_breakdown));
         formInputData.document && formData.append('document', formInputData.document);
         formInputData.extra_data && formData.append('extra_data', formInputData.extra_data);
     }, [formInputData])
@@ -56,8 +56,7 @@ const NewAgreement = () => {
             render: 'Failed to create agreement',
             type: 'error', isLoading: false, autoClose: 1000 });
         }
-      }
-
+    }
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-semibold mb-6">Create Escrow Agreement</h2>

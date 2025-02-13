@@ -67,18 +67,20 @@ const PaymentDetails = ({ formInputData, setFormInputData, setFormStep }:
             Amount Breakdown (Optional)
           </label>
           <div className="space-y-4">
-            {formInputData.amount_breakdown?.split('\n').map((_:any, index: never) => (
+            {formInputData.amount_breakdown?.map((item: {description: string, amount: string}, index: number) => (
               <div key={index} className="flex gap-4">
                 <input
-                  type="text" 
-                  placeholder="Cost description"
+                  type="text"
+                  placeholder="Cost description" 
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-                    value={formInputData.amount_breakdown?.split('\n')[index]?.split(':')[0] || ''}
+                  value={item.description || ''}
                   onChange={(e) => {
-                    const lines = formInputData.amount_breakdown?.split('\n') || [];
-                    const amount = lines[index]?.split(':')[1] || '';
-                    lines[index] = `${e.target.value}:${amount}`;
-                    setFormInputData({...formInputData, amount_breakdown: lines.join('\n')});
+                    const newBreakdown = [...(formInputData.amount_breakdown || [])];
+                    newBreakdown[index] = {
+                      ...newBreakdown[index],
+                      description: e.target.value
+                    };
+                    setFormInputData({...formInputData, amount_breakdown: newBreakdown});
                   }}
                 />
                 <div className="relative w-32">
@@ -89,12 +91,14 @@ const PaymentDetails = ({ formInputData, setFormInputData, setFormStep }:
                     type="number"
                     placeholder="0.00"
                     className="w-full pl-8 p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-                    value={formInputData.amount_breakdown?.split('\n')[index]?.split(':')[1] || ''}
+                    value={item.amount || ''}
                     onChange={(e) => {
-                      const lines = formInputData.amount_breakdown?.split('\n') || [];
-                      const desc = lines[index]?.split(':')[0] || '';
-                      lines[index] = `${desc}:${e.target.value}`;
-                      setFormInputData({...formInputData, amount_breakdown: lines.join('\n')});
+                      const newBreakdown = [...(formInputData.amount_breakdown || [])];
+                      newBreakdown[index] = {
+                        ...newBreakdown[index],
+                        amount: e.target.value
+                      };
+                      setFormInputData({...formInputData, amount_breakdown: newBreakdown});
                     }}
                   />
                 </div>
@@ -103,9 +107,12 @@ const PaymentDetails = ({ formInputData, setFormInputData, setFormStep }:
             <button
               type="button"
               onClick={() => {
-                const lines = formInputData.amount_breakdown?.split('\n') || [];
-                lines.push(':');
-                setFormInputData({...formInputData, amount_breakdown: lines.join('\n')});
+                const newBreakdown = [...(formInputData.amount_breakdown || [])];
+                newBreakdown.push({
+                  description: '',
+                  amount: ''
+                });
+                setFormInputData({...formInputData, amount_breakdown: newBreakdown});
               }}
               className="text-sky-500 hover:text-sky-600 text-sm font-medium"
             >

@@ -18,12 +18,19 @@ const AgreementDetails = ({ agreement }: { agreement: any }) => {
                   <div className="text-sm text-gray-500">Description</div>
                   <div className="font-medium">{agreement?.description}</div>
                 </div>
-                {/* {agreement?.amount_breakdown && (
+                {agreement?.amount_breakdown && typeof agreement.amount_breakdown === 'string' && (
                 <div>
                     <div className="text-sm text-gray-500">Amount Breakdown</div>
-                    <div className="font-medium">{agreement.amount_breakdown}</div>
+                    <div className="font-medium">
+                        {JSON.parse(agreement.amount_breakdown)?.map((item: {description: string, amount: string}, index: number) => (
+                            <div key={index} className="flex justify-between">
+                                <span>{item.description}</span>
+                                <span>{formatCurrency(Number(item.amount))}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                )} */}
+                )}
                 <div>
                   <div className="text-sm text-gray-500">Days to deliver</div>
                   <div className="font-medium">{agreement?.days_to_deliver}</div>

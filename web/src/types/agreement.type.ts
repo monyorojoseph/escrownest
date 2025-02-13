@@ -1,10 +1,10 @@
-import { UserType } from "./user.types";
+// import { UserType } from "./user.types";
 
 export interface AgreementType {
     id: string;
-    buyer?: UserType;
+    buyer?: string;
     buyer_email: string;
-    seller: UserType;
+    seller: string;
     name: string;
     amount: number;
     amount_breakdown?: any;

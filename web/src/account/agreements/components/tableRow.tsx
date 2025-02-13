@@ -1,15 +1,26 @@
 import { getUser } from "../../../hooks/getUser";
+import AgreementDetails from "../../../secure_payment/components/steps/agreementDetails";
 import { AgreementType } from "../../../types/agreement.type";
 import { formatCurrency, formatDate, formatTime } from "../../../utils";
+import { useModal } from '../../../hooks/useModal';
 
-const TableRow = ({ agreement, handleDelete, handleEdit, handleView, handleDispute }: 
+const TableRow = ({ agreement, handleDelete, handleEdit, handleDispute }: 
     { agreement: AgreementType, handleDelete: (id: string) => void, handleEdit: (id: string) => void, 
-    handleView: (id: string) => void, handleDispute: (id: string) => void }) => {
+    handleDispute: (id: string) => void }) => {
+    const { openModal, ModalComponent } = useModal();
     const { user } = getUser();
+    console.log(agreement.seller, user!.id);
+    console.log({ agreement });
     return (
-        <tr key={agreement.id} className="hover:bg-gray-50">
+        <tr key={agreement.id} 
+            className={`hover:bg-gray-50 ${agreement.seller === user!.id ? 'border-l-4 border-sky-100' : 'border-l-4 border-emerald-100'}`}>
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            {agreement.name}
+            <p>
+                {agreement.name}
+            </p>
+            <p className="text-xs font-normal text-gray-500 mt-1">
+                 {agreement.seller === user!.id ? '(You\'re selling)' : '(You\'re buying)'}
+            </p>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             {formatCurrency(agreement.amount)}
@@ -38,20 +49,28 @@ const TableRow = ({ agreement, handleDelete, handleEdit, handleView, handleDispu
                 </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-xs space-x-1.5">
-                <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
-                    onClick={() => handleView(agreement.id)}> View </button>
+                <button 
+                    className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
+                    onClick={openModal}
+                > 
+                    View 
+                </button>
+
+                <ModalComponent title="Agreement Details">
+                    <AgreementDetails agreement={agreement} />
+                </ModalComponent>
                     
                 { (agreement.status === 'pending' && 
-                agreement.seller.id === user!.id) && 
+                agreement.seller === user!.id) && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleEdit(agreement.id)}> Edit </button>}
                 { (agreement.status === 'active' && 
-                agreement.buyer?.id === user!.id) && 
+                agreement?.buyer === user!.id) && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleDispute(agreement.id)}> Dispute </button>}
 
                 {(agreement.status === 'pending') && 
-                agreement.seller.id === user!.id && 
+                agreement.seller === user!.id && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleDelete(agreement.id)}> Delete </button>}
             </td>
