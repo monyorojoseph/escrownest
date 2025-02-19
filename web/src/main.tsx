@@ -25,7 +25,9 @@ import GoogleCallback from './linking_accounts/google_callback.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import NewAgreement from './secure_payment/new.tsx';
 import ActivateAgreement from './secure_payment/activate.tsx';
-
+import TermsOfService from './pages/TermsOfService.tsx';
+import HowItWorks from './pages/HowItWorks.tsx';
+import PrivacyPolicy from './pages/PrivacyPolicy.tsx';
 
 axiosInstance
 
@@ -60,6 +62,9 @@ createRoot(document.getElementById('root')!).render(
                   <Route path="new" element={<NewAgreement />} />
                   <Route path="activate" element={<ActivateAgreement />} />
                 </Route>
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
               </Route>
             </Routes>
             <ToastContainer />
