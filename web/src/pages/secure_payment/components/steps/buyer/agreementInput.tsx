@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { useAuth } from "../../../../context/AuthContext"
+import { useAuth } from "../../../../../context/AuthContext"
 import { AxiosResponse } from "axios"
-import { AgreementType } from "../../../../types/agreement.type"
+import { AgreementType } from "../../../../../types/agreement.type"
 import { toast } from "react-toastify"
-import { fetcher } from "../../../../services/utils"
+import { fetcher } from "../../../../../services/utils"
 
 const AgreementInput = ({setStep, setAgreement}: 
     {setStep: (step: number) => void, setAgreement: (agreement: AgreementType) => void}) => {

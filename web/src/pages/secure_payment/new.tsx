@@ -6,7 +6,7 @@ import ProductDetails from "./components/steps/seller/productDetails";
 import PaymentDetails from "./components/steps/seller/paymentDetails";
 import DeliverableDetails from "./components/steps/seller/deliverableDetails";
 import AgreementReview from "./components/steps/seller/agreementReview";
-import { postingData } from "../services/utils";
+import { postingData } from "../../services/utils";
 
 export type AgreementInputData = {
     buyer_email: string;

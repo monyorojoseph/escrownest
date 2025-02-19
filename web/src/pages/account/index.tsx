@@ -6,13 +6,12 @@ import {
   DollarSign, 
   FileText, 
   AlertCircle, 
-  User as UserIcon,
   Menu,
   X,
   LogOut
-} from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { getUser } from '../hooks/getUser';
+} from 'lucide-react';  
+import { useAuth } from '../../context/AuthContext';
+import { getUser } from '../../hooks/getUser';
 
 interface SidebarItemProps {
   icon: React.ReactNode;

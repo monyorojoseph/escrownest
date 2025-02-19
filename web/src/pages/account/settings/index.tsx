@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { getUser } from '../../hooks/getUser';
+import { getUser } from '../../../hooks/getUser';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
-import { postingData } from '../../services/utils';
+import { postingData } from '../../../services/utils';
 
 
 const EyeIcon: React.FC<{ className?: string }> = ({ className }) => (

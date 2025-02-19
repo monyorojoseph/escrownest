@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AgreementType } from "../types/agreement.type";
+import { AgreementType } from "../../types/agreement.type";
 import ProgressStep from "./components/steps/progressStep";
 import AgreementInput from "./components/steps/buyer/agreementInput";
 import AgreementReview from "./components/steps/buyer/agreementReview";

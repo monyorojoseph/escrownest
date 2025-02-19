@@ -1,10 +1,10 @@
 import AgreementDetails from "../agreementDetails"
-import { AgreementType } from "../../../../types/agreement.type"
+import { AgreementType } from "../../../../../types/agreement.type"
 import { toast } from "react-toastify"
 import { AxiosResponse } from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router"
-import { updateItem } from "../../../../services/utils"
+import { updateItem } from "../../../../../services/utils"
 
 const AgreementReview = ({setStep, agreement}: 
   {setStep: (step: number) => void, agreement: AgreementType}) => {

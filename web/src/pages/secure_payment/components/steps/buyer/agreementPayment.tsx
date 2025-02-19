@@ -1,5 +1,5 @@
-import { AgreementType } from "../../../../types/agreement.type"
-import { formatCurrency } from "../../../../utils"
+import { AgreementType } from "../../../../../types/agreement.type"
+import { formatCurrency } from "../../../../../utils"
 import { useState, useRef, FormEvent } from "react"
 import Cards from 'react-credit-cards-2'
 

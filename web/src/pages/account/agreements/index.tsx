@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { AgreementType } from '../../types/agreement.type';
-import { getAgreements } from '../../hooks/getAgreements';
+import { AgreementType } from '../../../types/agreement.type';
+import { getAgreements } from '../../../hooks/getAgreements';
 import TableRow from './components/tableRow';
 import { toast } from 'react-toastify';
-import { deleteItem, fetcher } from '../../services/utils';
+import { deleteItem, fetcher } from '../../../services/utils';
 import { AxiosResponse } from 'axios';
 
 

@@ -1,8 +1,8 @@
-import { getUser } from "../../../hooks/getUser";
-import AgreementDetails from "../../../secure_payment/components/steps/agreementDetails";
-import { AgreementType } from "../../../types/agreement.type";
-import { formatCurrency, formatDate, formatTime } from "../../../utils";
-import { useModal } from '../../../hooks/useModal';
+import { getUser } from "../../../../hooks/getUser";
+import AgreementDetails from "../../../../pages/secure_payment/components/steps/agreementDetails";
+import { AgreementType } from "../../../../types/agreement.type";
+import { formatCurrency, formatDate, formatTime } from "../../../../utils";
+import { useModal } from '../../../../hooks/useModal';
 
 const TableRow = ({ agreement, handleDelete, handleEdit, handleDispute }: 
     { agreement: AgreementType, handleDelete: (id: string) => void, handleEdit: (id: string) => void, 

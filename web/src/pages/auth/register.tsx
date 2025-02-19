@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../../context/AuthContext'; 
 import GoogleAuth from './components/GoogleAuth';
 
 export default function Register() {
@@ -16,11 +16,6 @@ export default function Register() {
     setLoading(true);
     await register({ name, email, password });
     setLoading(false);
-  };
-
-  const handleGoogleRegister = () => {
-    // Add Google register logic here
-    console.log('Google register clicked');
   };
 
   return (
