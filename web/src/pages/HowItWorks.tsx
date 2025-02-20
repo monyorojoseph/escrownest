@@ -8,7 +8,7 @@ export default function HowItWorks() {
       <section className="relative px-4 py-16">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="mb-6 text-4xl font-bold text-gray-900">
-            How Escrownest <span className="text-sky-500">Works</span>
+            How escrownest <span className="text-sky-500">Works</span>
           </h1>
           <p className="mb-8 text-xl text-gray-700 leading-relaxed">
             Our escrow service ensures safe transactions between buyers and sellers. 

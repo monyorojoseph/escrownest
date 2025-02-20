@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-gray-900">Data Protection Commitment</h2>
             </div>
             <p className="text-gray-700 leading-relaxed mb-4">
-              At Escrownest, we take your privacy seriously. We are committed to protecting your personal 
+              At escrownest, we take your privacy seriously. We are committed to protecting your personal 
               and financial information with the highest standards of security and confidentiality.
             </p>
           </section>

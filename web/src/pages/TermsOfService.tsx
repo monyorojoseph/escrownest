@@ -13,7 +13,7 @@ export default function TermsOfService() {
               <h2 className="text-2xl font-semibold text-gray-900">Agreement Overview</h2>
             </div>
             <p className="text-gray-700 leading-relaxed">
-              By using Escrownest services, you agree to these terms and conditions. 
+              By using escrownest services, you agree to these terms and conditions. 
               Our service provides secure payment protection for online transactions between buyers and sellers.
             </p>
           </section>

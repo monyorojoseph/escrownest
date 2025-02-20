@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000',
+    baseURL: 'http://127.0.0.1:8080',
     // timeout: 5000,
     headers: {'Content-Type': 'application/json'}
   });
@@ -17,6 +17,16 @@ axiosInstance.interceptors.request.use(function (config) {
     return config;
   }, function (error) {
     return error;
+})
+
+axiosInstance.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  if (error.response.status === 401) {
+    localStorage.removeItem('tokens');
+    window.location.href = '/auth/login';
+  }
+  return error;
 })
 
 export default axiosInstance;

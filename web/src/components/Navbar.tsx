@@ -10,7 +10,7 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
         <Link to="/" className="text-xl font-semibold text-sky-600">
-          EscrowNest
+          escrownest
         </Link>
         
         <button 

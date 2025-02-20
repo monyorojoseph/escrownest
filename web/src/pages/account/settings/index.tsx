@@ -129,14 +129,14 @@ const UserSecurity: React.FC = () => {
 
   return (
   <div className="bg-white rounded-lg shadow-sm">
-    <div className="p-4 sm:p-6 border-b border-gray-100">
+    {/* <div className="p-4 sm:p-6 border-b border-gray-100">
       <h2 className="text-xl font-medium text-gray-900">Security</h2>
       <p className="mt-1 text-sm text-gray-500">Manage your password and security settings</p>
-    </div>
+    </div> */}
     
     <div className="p-4 sm:p-6 space-y-6">
       {/* Login Password Section */}
-      <div>
+      {/* <div>
         <h3 className="text-lg font-medium text-gray-900">Login Password</h3>
         <p className="mt-1 text-sm text-gray-500">Change the password you use to log into your account</p>
         <form className="mt-4" onSubmit={handleLoginPasswordSave}>
@@ -171,10 +171,10 @@ const UserSecurity: React.FC = () => {
             </button>
           </div>
         </form>
-      </div>
+      </div> */}
 
       {/* Agreement Password Section */}
-      <div className="pt-6 border-t border-gray-200">
+      {/* <div className="pt-6 border-t border-gray-200">
         <h3 className="text-lg font-medium text-gray-900">Agreement Password</h3>
         <p className="mt-1 text-sm text-gray-500">Create a password for approving agreements</p>
         <div className="mt-4">
@@ -207,7 +207,7 @@ const UserSecurity: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Verification Status Section */}
       <div className="pt-6 border-t border-gray-200">
