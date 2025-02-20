@@ -80,7 +80,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Contact Us</h2>
             <p className="text-gray-700">
               If you have any questions about our privacy policy or how we handle your data, 
-              please contact our Data Protection Officer at privacy@escrownest.com
+              please contact our Data Protection Officer at support@escrownest.com
             </p>
           </section>
 

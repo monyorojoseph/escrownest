@@ -140,7 +140,7 @@ export default function LandingPage() {
                 <Mail className="w-8 h-8 text-sky-500" />
                 <div className="text-left">
                   <h3 className="font-semibold text-gray-800">Email Us</h3>
-                  <p className="text-gray-700">support@escrow.com</p>
+                  <p className="text-gray-700">support@escrownest.com</p>
                 </div>
               </div>
             </div>
@@ -162,12 +162,13 @@ export default function LandingPage() {
               transition duration-300 shadow-lg hover:shadow-xl" >
               Get Started
             </Link>
-            <a
-              href="#"
-              className="inline-flex items-center bg-white text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition duration-300 shadow-lg hover:shadow-xl border border-gray-200"
+            <Link
+              to="/how-it-works"
+              className="inline-flex items-center bg-white text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 t
+              ransition duration-300 shadow-lg hover:shadow-xl border border-gray-200"
             >
               Learn More
-            </a>
+            </Link>
           </div>
         </div>
       </section>

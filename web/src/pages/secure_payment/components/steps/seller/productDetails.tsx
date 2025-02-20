@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react"
-import { AgreementInputData } from "./form"
 import { toast } from "react-toastify";
+import { AgreementInputData } from "../../../new";
 
 const ProductDetails = ({ formInputData, setFormInputData, setFormStep }: 
     { formInputData: AgreementInputData, setFormInputData: (formInputData: AgreementInputData ) => void, 
