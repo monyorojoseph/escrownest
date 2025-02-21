@@ -246,7 +246,7 @@ class PaymentAgreement(LifecycleModelMixin, models.Model):
                     
                     <p style="font-size: 14px; color: #666; border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px;">
                         Need assistance? Our support team is here to help!<br>
-                        Contact us at <a href="mailto:support@yourescrowapp.com" style="color: #007BFF;">support@yourescrowapp.com</a>
+                        Contact us at <a href="mailto:support@yourescrowapp.com" style="color: #007BFF;">support@escrownest.com</a>
                     </p>
                     
                     <p style="font-size: 14px; color: #666;">
@@ -259,7 +259,7 @@ class PaymentAgreement(LifecycleModelMixin, models.Model):
         """
 
         content = {
-            "subject": f"New Payment Agreement {self.id}",
+            "subject": f"{self.name} Payment Agreement",
             "html": email_body,
         }
         recipients = [{"address": self.buyer_email, "displayName": self.buyer.name if self.buyer else "Buyer"}]

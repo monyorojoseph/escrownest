@@ -5,7 +5,6 @@ import { getUser } from '../hooks/getUser';
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
-  const { user } = getUser();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -42,13 +41,7 @@ const Navbar = () => {
               </Link>
               <Link to="/account/settings"
                 className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors">
-                { user ? 
-                <span className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-sm font-semibold">
-                  {user.name[0]}
-                </span> : 
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>}
+                {isAuthenticated ? <UserNameIcon /> : <UserIcon />}
               </Link>
             </>
           ) : (
@@ -72,3 +65,27 @@ const Navbar = () => {
 };
 
 export default Navbar; 
+
+
+const UserIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+  </svg>
+
+  );
+};
+
+
+const UserNameIcon = () => {
+  const { user } = getUser();
+  return (
+    <>
+    { user ? 
+    <span className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-sm font-semibold">
+      {user.name[0]}
+    </span> : <UserIcon />}
+    </>
+
+  );
+};
