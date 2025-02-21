@@ -1,4 +1,5 @@
-FROM node:20-slim
+# Build stage
+FROM node:20-slim as build
 
 WORKDIR /app
 
@@ -10,6 +11,15 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 4173
+# Runner stage
+FROM node:20-slim as runner
 
-CMD [ "npm", "run", "preview" ]
+WORKDIR /app
+
+RUN npm install -g serve
+
+COPY --from=build /app/dist ./
+
+EXPOSE 6969
+
+CMD ["serve", ".", "-p", "6969"]
