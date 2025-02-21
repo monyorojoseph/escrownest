@@ -25,6 +25,8 @@ ENV PYTHONUNBUFFERED=1
 COPY --from=build /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
 COPY --from=build /app/staticfiles /app/staticfiles
 
+RUN pip install gunicorn
+
 COPY . .
 
 EXPOSE 8000
