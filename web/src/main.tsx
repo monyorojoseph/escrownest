@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import './index.css'
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
-import App from './App.tsx'
+import App from './pages/App.tsx'
 import SecurePayment from './pages/secure_payment/index.tsx';
 import Auth from './pages/auth/index.tsx';
 import Login from './pages/auth/login.tsx';
