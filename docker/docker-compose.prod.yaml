@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  web:
+    image: escrownest-web:latest
+    container_name: escrownest-web
+    restart: always
+    ports:
+      - "3000:6969"
+    env_file:
+      - .web.env
+  
+  app:
+    image: escrownest-app:latest
+    container_name: escrownest-app
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - .app.env
