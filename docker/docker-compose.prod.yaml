@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   web:
-    image: escrownest-web:latest
+    image: monyorojoseph/escrownest-web:latest
     container_name: escrownest-web
     restart: always
     ports:
@@ -11,7 +11,7 @@ services:
       - .web.env
   
   app:
-    image: escrownest-app:latest
+    image: monyorojoseph/escrownest-app:latest
     container_name: escrownest-app
     restart: always
     ports:
