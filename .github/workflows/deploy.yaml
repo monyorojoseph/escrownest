@@ -101,5 +101,8 @@ jobs:
               host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
               command: |
                   "cd escrownet/ && docker compose pull && docker compose up --build -d"
+                  
+          - name: Notify Command Success
+            run: echo "Command executed on ${{ secrets.HOST }} successfully!"
 
 
