@@ -87,22 +87,22 @@ jobs:
                 docker push monyorojoseph/escrownet-app:latest  
 
     
-    deploy:
-      runs-on: ubuntu-latest
-      needs: [build-web, build-app]
-      steps:
-          - name: Deploy Web App
-            uses: D3rHase/ssh-command-action@latest
-            with:
-              host: ${{ secrets.HOST }}
-              port: ${{ secrets.PORT }}
-              user: ${{ secrets.USER }}
-              private_key: ${{ secrets.PRIVATE_KEY }}
-              host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
-              command: |
-                  "cd escrownet/ && docker compose pull && docker compose up --build -d"
+    # deploy:
+    #   runs-on: ubuntu-latest
+    #   needs: [build-web, build-app]
+    #   steps:
+    #       - name: Deploy Web App
+    #         uses: D3rHase/ssh-command-action@latest
+    #         with:
+    #           host: ${{ secrets.HOST }}
+    #           port: ${{ secrets.PORT }}
+    #           user: ${{ secrets.USER }}
+    #           private_key: ${{ secrets.PRIVATE_KEY }}
+    #           host_fingerprint: ${{ secrets.HOST_FINGERPRINT }}
+    #           command: |
+    #               "cd escrownet/ && docker compose pull && docker compose up --build -d"
                   
-          - name: Notify Command Success
-            run: echo "Command executed on ${{ secrets.HOST }} successfully!"
+    #       - name: Notify Command Success
+    #         run: echo "Command executed on ${{ secrets.HOST }} successfully!"
 
 
