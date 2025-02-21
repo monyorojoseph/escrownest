@@ -1,4 +1,5 @@
 import React from 'react';
+import { AGREEMENT_STATUS } from '../../../constants/agreement';
 
 interface Transaction {
   id: string;
@@ -128,8 +129,8 @@ const Transactions: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${transaction.status === 'Completed' ? 'bg-green-100 text-green-800' : 
-                          transaction.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                          ${transaction.status === AGREEMENT_STATUS.COMPLETED ? 'bg-green-100 text-green-800' : 
+                          transaction.status === AGREEMENT_STATUS.PENDING ? 'bg-yellow-100 text-yellow-800' : 
                           'bg-red-100 text-red-800'}`}>
                           {transaction.status}
                         </span>

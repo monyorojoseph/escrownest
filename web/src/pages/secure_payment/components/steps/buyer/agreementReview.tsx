@@ -5,6 +5,7 @@ import { AxiosResponse } from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { updateItem } from "../../../../../services/utils"
+import { AGREEMENT_STATUS } from "../../../../../constants/agreement"
 
 const AgreementReview = ({setStep, agreement}: 
   {setStep: (step: number) => void, agreement: AgreementType}) => {
@@ -52,9 +53,9 @@ const AgreementReview = ({setStep, agreement}:
                 Cancel
               </button>
               <button
-                disabled={agreement.status !== 'pending'}
+                disabled={agreement.status !== AGREEMENT_STATUS.PENDING}
                 onClick={() => {
-                  if(agreement.status === 'pending') {
+                  if(agreement.status === AGREEMENT_STATUS.PENDING) {
                     setStep(3)
                   }else{
                     toast.error('You not allowed to proceed, only for pending agreements.')

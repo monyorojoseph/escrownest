@@ -3,7 +3,7 @@ import AgreementDetails from "../../../../pages/secure_payment/components/steps/
 import { AgreementType } from "../../../../types/agreement.type";
 import { formatCurrency, formatDate, formatTime } from "../../../../utils";
 import { useModal } from '../../../../hooks/useModal';
-
+import { AGREEMENT_STATUS } from "../../../../constants/agreement";
 const TableRow = ({ agreement, handleDelete, handleDispute }: 
     { agreement: AgreementType, handleDelete: (id: string) => void, handleDispute: (id: string) => void }) => {
     const { openModal, ModalComponent } = useModal();
@@ -40,9 +40,9 @@ const TableRow = ({ agreement, handleDelete, handleDispute }:
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm">
                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${agreement.status === 'active' ? 'bg-green-100 text-green-800' : 
-                    agreement.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                    agreement.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                    ${agreement.status === AGREEMENT_STATUS.ACTIVE ? 'bg-green-100 text-green-800' : 
+                    agreement.status === AGREEMENT_STATUS.PENDING ? 'bg-yellow-100 text-yellow-800' : 
+                    agreement.status === AGREEMENT_STATUS.COMPLETED ? 'bg-blue-100 text-blue-800' :
                     'bg-red-100 text-red-800'}`}>
                     {agreement.status}
                 </span>
@@ -50,21 +50,24 @@ const TableRow = ({ agreement, handleDelete, handleDispute }:
             <td className="px-6 py-4 whitespace-nowrap text-xs space-x-1.5">
                 <button 
                     className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
-                    onClick={openModal}
-                > 
+                    onClick={openModal}> 
                     View 
                 </button>
 
                 <ModalComponent title="Agreement Details">
                     <AgreementDetails agreement={agreement} />
                 </ModalComponent>
+                { (agreement.status === AGREEMENT_STATUS.PENDING && 
+                agreement?.buyer === user!.id) && 
+                    <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
+                        onClick={() => handleDispute(agreement.id)}> Activate </button>}
                     
-                { (agreement.status === 'active' && 
+                { (agreement.status === AGREEMENT_STATUS.ACTIVE && 
                 agreement?.buyer === user!.id) && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleDispute(agreement.id)}> Dispute </button>}
 
-                {(agreement.status === 'pending') && 
+                {(agreement.status === AGREEMENT_STATUS.PENDING) && 
                 agreement.seller === user!.id && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
                         onClick={() => handleDelete(agreement.id)}> Delete </button>}
