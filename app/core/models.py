@@ -140,7 +140,7 @@ class PaymentAgreement(LifecycleModelMixin, models.Model):
     currency = models.CharField(max_length=100, default="KES")
     description = models.TextField(null=True, blank=True)
     document = models.FileField(upload_to='agreement_documents/', null=True, blank=True)
-    days_to_deliver = models.PositiveIntegerField(default=0)
+    holding_days = models.PositiveIntegerField(default=0)
     days_to_dispute = models.PositiveIntegerField(default=0)
 
     DOWN_PAYMENT = 'down_payment'

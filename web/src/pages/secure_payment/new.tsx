@@ -16,14 +16,14 @@ export type AgreementInputData = {
     description: string;
     document?: File;
     transaction_type: string;
-    days_to_deliver: string;
+    holding_days: string;
     days_to_dispute: string;
     extra_data?: any;
 }
 
 const NewAgreement = () => {
     const [formStep, setFormStep] = useState(1);
-    const [formInputData, setFormInputData] = useState({} as AgreementInputData);
+    const [formInputData, setFormInputData] = useState({days_to_dispute: "0"} as AgreementInputData);
     const [agreement, setAgreement] = useState({} as any);
 
     const formData = new FormData();
@@ -34,7 +34,7 @@ const NewAgreement = () => {
         formData.append('amount', formInputData.amount);
         formData.append('transaction_type', formInputData.transaction_type);
         formData.append('description', formInputData.description);
-        formData.append('days_to_deliver', formInputData.days_to_deliver);
+        formData.append('holding_days', formInputData.holding_days);
         formData.append('days_to_dispute', formInputData.days_to_dispute);
         // optional fields
         formInputData.amount_breakdown && formData.append('amount_breakdown', JSON.stringify(formInputData.amount_breakdown));

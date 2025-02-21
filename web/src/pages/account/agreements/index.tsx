@@ -8,8 +8,8 @@ import { AxiosResponse } from 'axios';
 
 
 const Agreements: React.FC = () => {
-  const { agreements, isLoading, mutate } = getAgreements();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined);
+  const { agreements, isLoading, mutate } = getAgreements(searchTerm);
 
 
   const handleDelete = async (id: string) => {
@@ -26,21 +26,6 @@ const Agreements: React.FC = () => {
         type: "error", isLoading: false, autoClose: 3000 });
     }
   }
-
-  const handleEdit = async (id: string) => {
-    const toastId = toast.loading("Editing agreement...");
-    const response = await fetcher(`/api/payment-agreement//${id}/edit`) as AxiosResponse;
-    if(response.status === 200){
-      await mutate();
-      toast.update(toastId, {
-        render: "Agreement edited successfully",
-        type: "success", isLoading: false, autoClose: 3000 });
-    }else{
-      toast.update(toastId, {
-        render: "Failed to edit agreement",
-        type: "error", isLoading: false, autoClose: 3000 });
-    }
-  } 
 
   const handleView = (id: string) => {
     console.log(id);
@@ -72,7 +57,11 @@ const Agreements: React.FC = () => {
             className="w-full px-4 py-3 border border-gray-200 rounded-lg shadow-sm 
             placeholder:text-gray-400 focus:ring-2 focus:ring-sky-500 focus:border-sky-500
             transition duration-200"
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setTimeout(() => {
+                setSearchTerm(e.target.value);
+              }, 1000);
+            }}
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -80,6 +69,11 @@ const Agreements: React.FC = () => {
             </svg>
           </div>
         </div>
+        {isLoading && (
+          <div className="flex justify-center items-center h-48">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        )}
       </div>
       
       {isLoading ? (
@@ -95,7 +89,7 @@ const Agreements: React.FC = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product/Service
+                      Name
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Amount
@@ -104,7 +98,7 @@ const Agreements: React.FC = () => {
                       Payment Type
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Deadline In
+                      Holding Period
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created
@@ -119,8 +113,7 @@ const Agreements: React.FC = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {agreements.map((agreement: AgreementType) => (
-                    <TableRow agreement={agreement} handleDelete={handleDelete} handleEdit={handleEdit} 
-                    handleDispute={handleDispute} />
+                    <TableRow agreement={agreement} handleDelete={handleDelete} handleDispute={handleDispute} />
                   ))}
                 </tbody>
               </table>

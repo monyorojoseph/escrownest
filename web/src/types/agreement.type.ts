@@ -11,7 +11,7 @@ export interface AgreementType {
     currency: string;
     description?: string;
     document?: string;
-    days_to_deliver: number;
+    holding_days: number;
     transaction_type: 'down_payment' | 'full_payment';
     status: 'pending' | 'active' | 'completed' | 'disputed';
     extra_data?: Record<string, any>;

@@ -173,7 +173,7 @@ class PaymentAgreementViewSetAPI(ViewSet):
         data = request.data
         if data['buyer_email'] and data['name'] and data['amount']  \
             and data['transaction_type'] and data['description']  \
-            and data['days_to_deliver'] and data['days_to_dispute']:
+            and data['holding_days'] and data['days_to_dispute']:
             agreement = PaymentAgreement.objects.create(**data, seller=request.user)
 
             user = User.objects.filter(email=data['buyer_email'])
@@ -195,26 +195,16 @@ class PaymentAgreementViewSetAPI(ViewSet):
     
     @action(detail=False, methods=["GET"], url_path="list")
     def list_agreements(self, request):
+        name = self.request.query_params.get("name", None)
         user = request.user
-        agreements = PaymentAgreement.objects.filter(Q(seller=user) | Q(buyer_email=user.email) | Q(buyer=user))
+        
+        query_filter = Q(seller=user) | Q(buyer_email=user.email) | Q(buyer=user)
+        if name:
+            query_filter &= Q(name__icontains=name) 
+
+        agreements = PaymentAgreement.objects.filter(query_filter)
         serializer = PaymentAgreementSerializer(agreements, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    @action(detail=True, methods=["PUT"], url_path="update")
-    def change_agreement(self, request, pk):
-        agreement = PaymentAgreement.objects.get(pk=pk)
-        if agreement.status == PaymentAgreement.PENDING and agreement.seller == request.user:
-            data = request.data
-            data.pop("status", None)
-            for key, value in data.items():
-                setattr(agreement, key, value)
-            agreement.save()
-            agreement.refresh_from_db()
-            serializer = PaymentAgreementSerializer(agreement)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            logger.error("You can't update active, complete or disputed agreement, or you not the seller")
-            return Response({"message": "Failed to update."}, status=status.HTTP_400_BAD_REQUEST)
         
         
     @action(detail=True, methods=["PUT"], url_path="dispute")

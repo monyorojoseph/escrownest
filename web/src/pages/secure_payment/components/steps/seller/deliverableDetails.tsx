@@ -13,21 +13,18 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
       <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Days to deliver {formInputData.name}
+            Holding period for {formInputData.name}
           </label>
           <input
             type="number"
             name="deliveryPeriod"
-            value={formInputData.days_to_deliver}
-            onChange={(e) => setFormInputData({ ...formInputData, days_to_deliver: e.target.value })}
+            value={formInputData.holding_days}
+            onChange={(e) => setFormInputData({ ...formInputData, holding_days: e.target.value })}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
             placeholder="e.g., 14 days"
             title="This cannot be updated after creation"/>
-          <p className="text-xs text-red-500 font-semibold">
-            This cannot be changed after creation.
-          </p>
           <p className="mt-1 text-sm text-gray-500">
-            This is the period within which you must deliver the product/service, failure to deliver within this period money will be refunded to the buyer. 
+            This is the period in which we hold the funds until both you and the client agree to release them. If no agreement is reached within this period, the funds will be refunded to the client.
           </p>
         </div>
 
@@ -41,19 +38,16 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
             value={formInputData.days_to_dispute}
             onChange={(e) => setFormInputData({ ...formInputData, days_to_dispute: e.target.value })}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500"
-            placeholder="e.g., 7 days" max={formInputData.days_to_deliver}
+            placeholder="e.g., 7 days" max={formInputData.holding_days}
             title="This cannot be updated after creation"/>
-          <p className="text-xs text-red-500 font-semibold">
-            This cannot be changed after creation.
-          </p>
           <p className="mt-1 text-sm text-gray-500">
-            This is the period within which the buyer can dispute the agreement if they are not interested with the product/service anymore. 
+            This is the period within which the client can deactivate an already activated agreement if they are not interested in the product.
           </p>
         </div>
   
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Buyer's Email
+            Client's Email
           </label>
           <input
             type="email"
@@ -64,8 +58,18 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
             placeholder="buyer@email.com"
           />
           <p className="mt-1 text-sm text-gray-500">
-            The buyer will receive escrow agreement details at this email
+            The client will receive agreement details at this email
           </p>
+        </div>
+
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-600 font-medium mb-1">Important Notice:</p>
+          <ul className="text-sm text-red-500 space-y-1">
+            <li>• Once created, agreement details cannot be modified</li>
+            <li>• Agreement will remain in "Pending" status initially</li>
+            <li>• Status changes to "Active" after client completes payment</li>
+            <li>• Please review all details carefully before creating</li>
+          </ul>
         </div>
   
         <div className="pt-4 flex justify-between">
@@ -76,7 +80,7 @@ const DeliverableDetails = ({ formInputData, setFormInputData, setFormStep, hand
           </button>
           <button disabled={loading}
             onClick={async () => {
-              if (formInputData.days_to_deliver && formInputData.buyer_email && formInputData.days_to_dispute) {
+              if (formInputData.holding_days && formInputData.buyer_email && formInputData.days_to_dispute) {
                 setLoading(true)
                 await handleSubmit()
                 setLoading(false)

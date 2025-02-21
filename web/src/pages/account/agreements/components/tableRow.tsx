@@ -4,9 +4,8 @@ import { AgreementType } from "../../../../types/agreement.type";
 import { formatCurrency, formatDate, formatTime } from "../../../../utils";
 import { useModal } from '../../../../hooks/useModal';
 
-const TableRow = ({ agreement, handleDelete, handleEdit, handleDispute }: 
-    { agreement: AgreementType, handleDelete: (id: string) => void, handleEdit: (id: string) => void, 
-    handleDispute: (id: string) => void }) => {
+const TableRow = ({ agreement, handleDelete, handleDispute }: 
+    { agreement: AgreementType, handleDelete: (id: string) => void, handleDispute: (id: string) => void }) => {
     const { openModal, ModalComponent } = useModal();
     const { user } = getUser();
     console.log(agreement.seller, user!.id);
@@ -29,7 +28,7 @@ const TableRow = ({ agreement, handleDelete, handleEdit, handleDispute }:
             {agreement.transaction_type.split('_').join(' ').toLocaleUpperCase()}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {agreement.days_to_deliver} days
+            {agreement.holding_days} days
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex flex-col space-y-0.5">
                 <span className="text-gray-500">
@@ -60,10 +59,6 @@ const TableRow = ({ agreement, handleDelete, handleEdit, handleDispute }:
                     <AgreementDetails agreement={agreement} />
                 </ModalComponent>
                     
-                { (agreement.status === 'pending' && 
-                agreement.seller === user!.id) && 
-                    <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
-                        onClick={() => handleEdit(agreement.id)}> Edit </button>}
                 { (agreement.status === 'active' && 
                 agreement?.buyer === user!.id) && 
                     <button className="cursor-pointer text-gray-600 hover:text-gray-800 hover:font-bold" 
