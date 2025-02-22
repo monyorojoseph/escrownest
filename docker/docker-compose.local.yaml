@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  web:
+    image: postgres
+    container_name: escrownest-pg
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=escrownest
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
