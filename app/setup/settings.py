@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 #     }
 # }
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/escrownest")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/postgres")
 
 DATABASES = {
     'default': dj_database_url.config(
